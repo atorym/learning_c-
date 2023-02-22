@@ -1,46 +1,34 @@
-//библиотека
-#include <iostream> 
+#include <iostream>
 
-//функция
-int calcilate() 
-{
-//вывод текста на экран
-std::cout<<"SOSAT JOPU"; 
-return 0;
+/*
+void printnumbers(auto a) {
+  std::cout << a;
+}
+*/
+int summ(int a, int b) {
+  return a + b;
+}
+
+int multiply(int a, int b){
+  return a * b;
+}
+
+float chastnoe(int a, int b){
+  return a / b;
+}
+
+int doblenomber(int a){
+  return a+a;
 }
 
 int main() {
-  //стейтмент обьявления
-  int x;             
-  int y;
-  //стейтмент присваивания
-  x = 10;            
-  //выражение
-  y = x + 3 + 2 - 4; 
-  //стейтмент вывода
-  std::cout << y;    
-/*
-заходит из консоли в git bash
-bash
-
-переключение между ветками
-git checkout <название ветки>
-
-создание новой ветки
-git checkout master && git checkout -b "<название новой ветки>"
-
-проиндексировать изменения перед фиксацией
-git add .
-
-создание фиксации на ветке
-git commit -m "<сообщение к коммиту>"
-сохраняет текущее состояние репозитория
-ctrl+k ctrl+k
-
-новый коммит создается комбинацией
-git add . && git commit -m "<сообщение к коммиту>"
-*/
-
-  return EXIT_SUCCESS;
+  int a;
+  int b;
+  std::cout << "Vvedite chisla" << std::endl;
+  std::cin >> a >> b;
+  std::cout << "summa = " << summ(a,b) << std::endl 
+  << "proizvedenie 2 summ vashego chisla = " << multiply(summ(a,b), summ(a,b)) << std::endl
+  << "chastnoe vashih chisel = " << chastnoe(a,b) << std::endl << "double number pervogo chisla = " << doblenomber(a);
+  
+  return 0;
 }
-

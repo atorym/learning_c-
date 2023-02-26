@@ -1,9 +1,10 @@
-#include <iostream> 
+#include <iostream>
 
+int summ(int a, int b);
 
 int main() {
-  int a;
-  std::cin >> a;
-  std::cout << std::endl << a;
+
+  std::cout << summ(4, 3);
+
   return 0;
 }

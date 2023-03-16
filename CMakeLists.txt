@@ -5,5 +5,5 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(LIBS)
 
-add_executable(test_and_do main.cpp)
+add_executable(test_and_do main.cpp constants.h)
 target_link_libraries(test_and_do ${LIBS})

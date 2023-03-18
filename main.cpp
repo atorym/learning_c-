@@ -1,5 +1,12 @@
-#include "constants.h"
 #include <iostream>
+
+#include "constants.h"
+
+
+double path(auto time) {
+  return my_constants::gravity * time * time / 2;
+}
+
 
 int main() {
 #ifdef WIN32
@@ -29,20 +36,20 @@ int main() {
    At 5 seconds, the ball is on the ground.
    */
 
-  std::wcout << L"Введите высоту башни в метрах: ";
-  int16_t height;
-  std::wcin >> height;
-  int16_t t{0};
-  double height_in_time{height - (my_constants::gravity * t * t) / 2};
-  std::wcout << L"В момент времени " << t << L" с., мячик находится на высоте " << height << L" метров.\n";
-  t++;
+  std::cout << "Введите высоту башни в метрах: ";
+  std::int16_t height;
+  std::cin >> height;
+  std::int16_t t = 0;
+  double height_in_time = height - path(t);
+  std::cout << "В момент времени " << t << " с., мячик находится на высоте " << height << " метров.\n";
+  ++t;
   while (height_in_time >= 0) {
-    height_in_time = height_in_time - my_constants::gravity * t * t / 2;
+    height_in_time = height_in_time - path(t);
     if (height_in_time <= 0) {
-      std::wcout << L"В момент времени " << t << L" с., мячик находится на земле " << std::endl;
-    } else if (height_in_time > 0) {
-      std::wcout << L"В момент времени " << t << L" с., мячик находится на высоте " << height_in_time << L" метров.\n";
-      t++;
+      std::cout << "В момент времени " << t << " с., мячик находится на земле " << std::endl;
+    } else {
+      std::cout << "В момент времени " << t << " с., мячик находится на высоте " << height_in_time << " метров.\n";
+      ++t;
     }
   }
   return EXIT_SUCCESS;

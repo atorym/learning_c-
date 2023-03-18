@@ -11,15 +11,23 @@
    Если ответом является целочисленный тип данных, то используйте соответствующий тип с фиксированным размером (например, int16_t).
    Если переменная должна быть константной, то так и отвечайте.
 
-   *Возраст пользователя.                                                                     short
+   *Возраст пользователя.                                                                     std::uint8_t
    *Нравится ли определенный цвет пользователю?                                               bool
-   *Число Пи.                                                                                 const double
-   *Количество страниц в учебнике.                                                            const short
-   *Цена акций в долларах (дробь присутствует).                                               double
-   *Сколько раз вы моргнули за всю свою жизнь? (Примечание: Ответ исчисляется в миллионах)    long long
+   *Число Пи.                                                                                 constexpr double
+   *Количество страниц в учебнике.                                                            constexpr std::uint16_t
+   *Цена акций в долларах (дробь присутствует).                                               std::uint64_t
+   *Сколько раз вы моргнули за всю свою жизнь? (Примечание: Ответ исчисляется в миллионах)    std::uint64_t
    *Пользователь выбирает опцию с помощью ввода определенной буквы.                           char
    */
 #include <iostream>
+
+
+auto sum(auto lhs, auto rhs) {
+  return lhs + rhs;
+}
+
+
+void print_result(auto v);
 
 
 int main() {
@@ -38,26 +46,27 @@ int main() {
    7 * 5 = 35
    */
   std::wcout << L"Далее введите 2 числа: ";
-  double q,e;
-  std::wcin >> q >> e;
+  double lhs, rhs;
+  std::wcin >> lhs >> rhs;
   std::wcout << L"Далее введите тип желаемой операции (+,-,*,/): ";
-  char operacia;
-  std::cin >> operacia;
-  if (operacia == '+'){
-    q=q+e;
-    std::wcout << L"Результат: " << q << std::endl;
-  } else if(operacia == '-'){
-    q=q-e;
-    std::wcout << L"Результат: " << q << std::endl;
-  } else if (operacia == '*'){
-    q=q*e;
-    std::wcout << L"Результат: " << q << std::endl;
-  } else if (operacia == '/'){
-    q=q/e;
-    std::wcout << L"Результат: " << q << std::endl;
+  char op;
+  std::cin >> op;
+  if (op == '+') {
+    print_result(lhs + rhs);
+  } else if (op == '-') {
+    print_result(lhs - rhs);
+  } else if (op == '*') {
+    print_result(lhs * rhs);
+  } else if (op == '/') {
+    print_result(lhs / rhs);
   } else {
     std::wcout << L"Дорогой, вы ввели хуйню";
   }
 
   return EXIT_SUCCESS;
+}
+
+
+void print_result(auto v) {
+  std::wcout << L"Result: " << v << std::endl;
 }

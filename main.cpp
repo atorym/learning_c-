@@ -9,29 +9,40 @@
 которая выведет каждое из этих значений, а затем подсчитает, сколько всего денег вы заработали
 за день (перемножьте все 3 поля).
 */
+
+#include <cstdint>
 #include <iostream>
-#include <stdint.h>
 
 
 struct Advertising {
-  std::uint32_t quantity{0};
-  double percent{0};
-  double money{0};
+  std::uint32_t quantity;
+  double percent;
+  double money;
+
+
+  friend std::ostream& operator<<(std::ostream& os, const Advertising& advertising) {
+    os << "Here is user statistic:\n"
+       << "Quantity of announcement: " << advertising.quantity << "\n"
+       << "Percent of user's activity: " << advertising.percent << "\n"
+       << "Average earnings from 1 user: " << advertising.money << "\n"
+       << "Amount of money for 1 day: " << advertising.quantity * advertising.percent * advertising.money << "\n";
+    return os;
+  }
+
+
+  friend std::istream& operator<<(std::istream& os, Advertising& advertising) {
+    os >> advertising.quantity >> advertising.percent >> advertising.money;
+    return os;
+  }
 };
 
-void counter(Advertising advertising) {
-  using namespace std;
-  cout << "Here is user statistic:\n";
-  cout << "Quantity of announcement: " << advertising.quantity << "\n";
-  cout << "Percent of user's activity: " << advertising.percent << "\n";
-  cout << "Average earnings from 1 user: " << advertising.money << "\n";
-  cout << "Amount of money for 1 day: " << advertising.quantity * advertising.percent * advertising.money << "\n";
-}
 
 int main() {
   std::cout << "Enter first user quantity of announcement, percent of user's clicks, average earnings from 1 user:\n";
-  Advertising user1{};
-  std::cin >> user1.quantity >> user1.percent >> user1.money;
-  counter(user1);
+  Advertising user1;
+  std::cin >> user1;
+
+  std::cout << user1 << '\n';
+
   return EXIT_SUCCESS;
 }

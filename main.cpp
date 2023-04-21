@@ -12,8 +12,6 @@ natural_ratio plus(natural_ratio, natural_ratio);
 natural_ratio minus(natural_ratio, natural_ratio);
 natural_ratio multiply(natural_ratio, natural_ratio);
 natural_ratio divide(natural_ratio, natural_ratio);
-natural_ratio divide(natural_ratio, natural_ratio);
-
 
 
 auto get_user_operation() {
@@ -64,7 +62,7 @@ int main() {
 
   try {
     print_ratio(get_user_operation()(get_user_ratio(1), get_user_ratio(2)));
-  } catch(...) {
+  } catch (...) {
     std::cout << "user interrupt";
   }
 
@@ -73,16 +71,19 @@ int main() {
 
 
 natural_ratio plus(natural_ratio lhs, natural_ratio rhs) {
-  // TODO realization
-  assert(false);
-  return {};
+
+  natural_ratio result;
+  result.numerator = lhs.numerator * rhs.denominator + rhs.numerator * lhs.denominator;
+  result.denominator = lhs.denominator * rhs.denominator;
+  return result;
 }
 
 
 natural_ratio minus(natural_ratio, natural_ratio) {
-  // TODO realization
-  assert(false);
-  return {};
+  natural_ratio result;
+  result.numerator = lhs.numerator * rhs.denominator - rhs.numerator * lhs.denominator;
+  result.denominator = lhs.denominator * rhs.denominator;
+  return result;
 }
 
 

@@ -16,7 +16,7 @@ int main() {
   std::cin >> value;
   std::cout << "Sum of numbers from 1 to " << value << " is: " << sumTo(value);
 
-  return 0;
+  return EXIT_SUCCESS;
 }
 
 std::uint32_t sumTo(std::uint16_t value) {
@@ -25,3 +25,19 @@ std::uint32_t sumTo(std::uint16_t value) {
     sum = sum + counter;
   return sum;
 }
+
+/*
+Что не так со следующим циклом?
+
+// Выводим все числа от 8 до 0
+for (unsigned int count=8; count >= 0; --count)
+    cout << count << " ";
+
+Ответ: программа уйдет в бесконечный цикл из за того что используется unsigned int,
+ в тот момент, когда count будет =0, и из него вычтется 1, count станет равен своему
+ максимальному значению (unsigned int) что то в районе 4000+, после чего будет по
+ новой вычитать по 1 за цикл.
+cout не std::cout,
+unsigned int не указан конретно тип данных,
+
+ */

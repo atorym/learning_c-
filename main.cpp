@@ -19,7 +19,19 @@
 
 
 using user_value_t = std::uint8_t;
-enum class user_input_state:std::uint8_t;
+enum class user_input_state : std::uint8_t;
+
+
+namespace {
+
+
+constexpr user_value_t range_lo = 1;
+constexpr user_value_t range_hi = 100;
+constexpr std::size_t attempt_count = 7;
+
+
+}// namespace
+
 
 user_value_t randomiser();
 user_input_state comparison(user_value_t, user_value_t);
@@ -39,11 +51,11 @@ int main() {
 user_value_t randomiser() {
   std::random_device rd;
   static std::mt19937 random_engine{rd()};
-  return std::uniform_int_distribution<user_value_t>{0, 100}(random_engine);
+  return std::uniform_int_distribution<user_value_t>{range_lo, range_hi}(random_engine);
 }
 
 
-enum class user_input_state:std::uint8_t {
+enum class user_input_state : std::uint8_t {
   win,
   out_of_range,
   bigger,
@@ -54,7 +66,7 @@ enum class user_input_state:std::uint8_t {
 user_input_state comparison(user_value_t random_number, user_value_t user_number) {
   if (user_number == random_number) {
     return user_input_state::win;
-  } else if (user_number < 1 || user_number > 100) {
+  } else if (user_number < range_lo || user_number > range_hi) {
     return user_input_state::out_of_range;
   } else if (user_number > random_number) {
     return user_input_state::bigger;
@@ -101,5 +113,5 @@ void game_session() {
         break;
     }
     ++i;
-  } while (i < 7);
+  } while (i < attempt_count);
 }

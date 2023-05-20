@@ -8,16 +8,15 @@
 Напишите программу, которая выводит буквы английского алфавита от a до z вместе с кодами из ASCII-таблицы.
  */
 
-
-#include <iostream>
 #include <cstdint>
+#include <iostream>
 
 
 int main() {
-uint8_t counter = 65;
-while (counter <= 90){
-  std::cout << counter << " has " << static_cast<int32_t>(counter) << " dex number in ASCII table.\n";
-  ++counter;
-}
-  return 0;
+  std::uint8_t counter = 'a';
+  while (counter <= 'z') {
+    std::cout << static_cast<char>(counter) << " has " << static_cast<std::int32_t>(counter) << " dex number in ASCII table.\n";
+    ++counter;
+  }
+  return EXIT_SUCCESS;
 }

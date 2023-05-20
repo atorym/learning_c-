@@ -8,7 +8,9 @@
 #include <cstdint>
 #include <iostream>
 
+
 std::uint32_t sumTo(std::uint16_t);
+
 
 int main() {
   std::cout << "Pls enter your int positive value: ";
@@ -19,10 +21,12 @@ int main() {
   return EXIT_SUCCESS;
 }
 
+
 std::uint32_t sumTo(std::uint16_t value) {
-  std::uint32_t sum = 0;
-  for (std::uint16_t counter = 0; counter <= value; ++counter)
-    sum = sum + counter;
+  std::uint32_t sum = 1;
+  for (std::uint16_t counter = sum + 1; counter <= value; ++counter) {
+    sum += counter;
+  }
   return sum;
 }
 
@@ -38,6 +42,6 @@ for (unsigned int count=8; count >= 0; --count)
  максимальному значению (unsigned int) что то в районе 4000+, после чего будет по
  новой вычитать по 1 за цикл.
 cout не std::cout,
-unsigned int не указан конретно тип данных,
+fixed size int круче, unsigned int используют обезьяны,
 
  */

@@ -9,30 +9,26 @@
 
 #include <cstdint>
 #include <iostream>
+#include <stdexcept>
 
 
 std::int16_t calculate(std::int16_t lhs, std::int16_t rhs, char operation) {
   switch (operation) {
-    case '+' :
+    case '+':
       return lhs + rhs;
-      break;
-    case '-' :
+    case '-':
       return lhs - rhs;
-      break;
-    case '*' :
+    case '*':
       return lhs * rhs;
-      break;
-    case '/' :
+    case '/':
       return lhs / rhs;
-      break;
     default:
-      std::cout << "ERROR";
-      break;
+      throw std::runtime_error{"ERROR"};
   }
 }
+
+
 int main() {
-
-std::cout << calculate(32,16,'/');
-
-return 0;
+  std::cout << calculate(32, 16, '/');
+  return EXIT_SUCCESS;
 }

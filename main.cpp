@@ -9,16 +9,14 @@
 1
  */
 
-#include <iostream>
 #include <cstdint>
+#include <iostream>
 
 
-int main()
-{
-  uint16_t outer = 5;
-  while (outer >= 1)
-  {
-    uint16_t inner = outer;
+int main() {
+  std::uint16_t outer = 5;
+  while (outer >= 1) {
+    std::uint16_t inner = outer;
     while (inner >= 1) {
       std::cout << inner-- << " ";
     }
@@ -26,6 +24,5 @@ int main()
     std::cout << "\n";
     --outer;
   }
-
-  return 0;
+  return EXIT_SUCCESS;
 }

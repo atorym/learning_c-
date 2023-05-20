@@ -20,6 +20,7 @@ double getInitialHeight() {
   return initialHeight;
 }
 
+
 // Возвращаем расстояние от земли после "..." секунд падения
 double calculateHeight(double initialHeight, int seconds) {
   // Используем формулу: [ s = u * t + (a * t^2) / 2 ], где u(начальная скорость) = 0

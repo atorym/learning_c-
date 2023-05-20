@@ -19,18 +19,19 @@
 #include <iostream>
 
 
-std::int16_t randomiser();
+std::int16_t randomizer();
 bool comparison(std::int16_t, std::int16_t);
 std::uint8_t check_input();
+
 
 int main() {
   srand(static_cast<std::uint16_t>(std::time(0)));
   std::cout << "Program Hi-Lo:\n";
 start_again:
   std::cout << "I'm create random int number in range of 0-100. You have 7 try's. Can you guess it?\n";
-  std::int16_t random_number = randomiser();
+  std::int16_t random_number = randomizer();
   std::int8_t counter{0};
-  while (counter <= 6) {
+  while (counter < 7) {
     std::int16_t user_number;
     std::cin >> user_number;
     if (comparison(random_number, user_number)) {
@@ -41,18 +42,21 @@ start_again:
   }
 repeat:
   std::uint8_t decision = check_input();
-  if (decision == 'y')
+  if (decision == 'y') {
     goto start_again;
-  else if (decision == 'n')
+  } else if (decision == 'n') {
     return EXIT_SUCCESS;
-  else
+  } else {
     goto repeat;
+  }
 }
 
-std::int16_t randomiser() {
+
+std::int16_t randomizer() {
   static const double fraction = 1.0 / (static_cast<double>(RAND_MAX) + 1.0);
   return static_cast<int>(rand() * fraction * (100 - 0 + 1) + 0);
 }
+
 
 bool comparison(std::int16_t random_number, std::int16_t user_number) {
   bool status;
@@ -71,6 +75,7 @@ bool comparison(std::int16_t random_number, std::int16_t user_number) {
   }
   return status;
 }
+
 
 std::uint8_t check_input() {
   std::cout << "Would you like to try again?(y/n)\n";

@@ -10,9 +10,14 @@ goat, cat, dog и ostrich. Напишите функцию getAnimalName(), ко
 
 #include <cstdint>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 
-enum class animal_e {
+
+using literal_string = char const*;
+
+
+enum class animal_t : std::uint8_t {
   pig,
   chicken,
   goat,
@@ -21,54 +26,47 @@ enum class animal_e {
   ostrich,
 };
 
-std::string get_animal_name(animal_e animal) {
+
+literal_string get_animal_name(animal_t animal) {
   switch (animal) {
-    case animal_e::pig:
+    case animal_t::pig:
       return "pig";
-      break;
-    case animal_e::chicken:
+    case animal_t::chicken:
       return "chicken";
-      break;
-    case animal_e::goat:
+    case animal_t::goat:
       return "goat";
-      break;
-    case animal_e::cat:
+    case animal_t::cat:
       return "cat";
-      break;
-    case animal_e::dog:
+    case animal_t::dog:
       return "dog";
-      break;
-    case animal_e::ostrich:
+    case animal_t::ostrich:
       return "ostrich";
-      break;
     default:
-      return "animal not defined";
-      break;
+      throw std::logic_error{"animal not defined"};
   }
 }
 
-std::uint16_t print_number_of_legs(animal_e animal) {
+
+std::uint16_t print_number_of_legs(animal_t animal) {
   switch (animal) {
-    case animal_e::pig:
-    case animal_e::goat:
-    case animal_e::cat:
-    case animal_e::dog:
+    case animal_t::pig:
+    case animal_t::goat:
+    case animal_t::cat:
+    case animal_t::dog:
       return 4;
-      break;
-    case animal_e::chicken:
-    case animal_e::ostrich:
+    case animal_t::chicken:
+    case animal_t::ostrich:
       return 2;
-      break;
     default:
-      std::cout << "ERROR";
+      throw std::logic_error{"ERROR"};
   }
 }
+
 
 int main() {
-std::cout << get_animal_name(animal_e::cat) << " has "
-<< print_number_of_legs(animal_e::cat) << " legs\n"
-    << get_animal_name(animal_e::chicken) << " has "
-    <<print_number_of_legs(animal_e::chicken) << " legs\n";
-
-  return 0;
+  std::cout << get_animal_name(animal_t::cat) << " has "
+            << print_number_of_legs(animal_t::cat) << " legs\n"
+            << get_animal_name(animal_t::chicken) << " has "
+            << print_number_of_legs(animal_t::chicken) << " legs\n";
+  return EXIT_SUCCESS;
 }

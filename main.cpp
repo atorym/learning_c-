@@ -8,9 +8,12 @@
 количество секунд, которое необходимо ему для достижения земли.
  */
 
-#include "constants.h"
 #include <cstdint>
 #include <iostream>
+
+
+#include "constants.h"
+
 
 // Получаем начальную высоту от пользователя и возвращаем её
 double getInitialHeight() {
@@ -30,6 +33,7 @@ double calculateHeight(double initialHeight, int seconds) {
   return currentHeight;
 }
 
+
 // Выводим высоту, на которой находится мячик после каждой секунды падения
 void printHeight(double height, int seconds) {
   if (height > 0.0) {
@@ -38,21 +42,24 @@ void printHeight(double height, int seconds) {
     std::cout << "At " << seconds << " seconds, the ball is on the ground.\n";
 }
 
+
 void calculateAndPrintHeight(double initialHeight, int seconds) {
   double height = calculateHeight(initialHeight, seconds);
   printHeight(height, seconds);
 }
 
+
 double get_current_height(double initialHeight, int seconds) {
   return calculateHeight(initialHeight, seconds);
 }
 
+
 int main() {
   const double initialHeight = getInitialHeight();
   std::int16_t second{0};
-  for ( ;get_current_height(initialHeight, second) > 0; ++second) {
-    calculateAndPrintHeight(initialHeight, second);
+  while (get_current_height(initialHeight, second) > 0) {
+    calculateAndPrintHeight(initialHeight, second++);
   }
   std::cout << "At " << second << " seconds, the ball is on the ground";
-  return 0;
+  return EXIT_SUCCESS;
 }

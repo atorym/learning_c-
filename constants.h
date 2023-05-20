@@ -1,7 +1,10 @@
 #pragma once
 
 
-namespace myConstants
-{
-const double gravity(9.8);
+namespace myConstants {
+
+
+double const gravity{9.8};
+
+
 }

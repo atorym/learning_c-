@@ -8,6 +8,7 @@
 
 TEST(autotask, ${task_id}) {
   using namespace testing;
+  using namespace ${task_namespace};
 
   EXPECT_EQ(Solution::<#initializer#>, <#initializer#>);
   EXPECT_THAT(Solution::<#initializer#>, ElementsAre(<#initializer#>));

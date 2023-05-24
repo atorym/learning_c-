@@ -1,5 +1,5 @@
-#include <cstdlib>
 #include <cstdint>
+#include <cstdlib>
 
 
 namespace ${task_namespace} {
@@ -8,4 +8,4 @@ namespace ${task_namespace} {
   <#initializer#>
 
 
-} // ${task_namespace}
+} // namespace ${task_namespace}

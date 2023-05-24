@@ -1,0 +1,11 @@
+#include <cstdlib>
+#include <cstdint>
+
+
+namespace ${task_namespace} {
+
+
+  <#initializer#>
+
+
+} // ${task_namespace}

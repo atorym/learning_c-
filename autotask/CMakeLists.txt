@@ -30,6 +30,7 @@ function(asm_task name)
   set(curr volume/${name})
   file(GLOB files ${curr}/*)
   target_sources(autotask PRIVATE "${files}")
+  target_include_directories(autotask PRIVATE ${curr})
 endfunction()
 
 

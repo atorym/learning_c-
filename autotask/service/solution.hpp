@@ -1,4 +1,11 @@
-#include <solution.hpp>
+/*
+ *
+ */
+
+#pragma once
+
+#include <cstdint>
+#include <cstdlib>
 
 
 namespace ${task_namespace} {

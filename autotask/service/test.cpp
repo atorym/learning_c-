@@ -1,3 +1,5 @@
+#include <solution.hpp>
+
 #include <gtest/gtest.h>
 // GMock matches
 // http://google.github.io/googletest/reference/matchers.html

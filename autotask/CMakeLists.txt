@@ -1,4 +1,6 @@
 add_library(autotask_sol)
+target_link_extra_lib(autotask_sol)
+target_pch(autotask_sol)
 
 add_executable(autotask service/helper.hpp)
 target_link_libraries(autotask
@@ -53,4 +55,4 @@ endfunction()
 
 
 asm_task(2.1)
-#asm_task(2.4)
+asm_task(2.4)

@@ -13,5 +13,13 @@ function(target_link_extra_lib name)
     )
 endfunction()
 
+function(target_pch name)
+  target_precompile_headers(${name} PUBLIC
+    "<range/v3/all.hpp>"
+    "<fmt/printf.h>"
+    "<fmt/format.h>"
+    )
+endfunction()
+
 add_subdirectory(autotask)
 add_subdirectory(sandbox)

@@ -8,10 +8,10 @@
 #include <cstdlib>
 
 
-namespace ${task_namespace} {
+namespace at::${task_namespace} {
 
 
 <#initializer#>
 
 
-} // namespace ${task_namespace}
+} // namespace at::${task_namespace}

@@ -8,14 +8,11 @@
 //#include <gmock/gmock-more-matchers.h>
 
 
-TEST(autotask, at_2_1) {
-  using namespace testing;
-  using namespace at_2_1;
+using namespace testing;
+using namespace at::${task_namespace};
 
-  for (auto const [a, args] : {
-         std::make_pair(answer::equilateral, std::make_tuple(1, 1, 1))}) {
-    std::apply([a](auto... args) {
-      ASSERT_EQ(a, solution(args...));
-    }, args);
-  }
+
+TEST(autotask, ${task_id}) {
+  EXPECT_EQ(<#initializer#>, <#initializer#>);
+  EXPECT_THAT(<#initializer#>, ElementsAre(<#initializer#>));
 }

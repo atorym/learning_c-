@@ -1,0 +1,10 @@
+#include <solution.hpp>
+
+
+namespace at::${task_namespace} {
+
+
+<#initializer#>
+
+
+} // namespace at::${task_namespace}

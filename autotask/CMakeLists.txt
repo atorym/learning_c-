@@ -5,37 +5,36 @@ target_link_libraries(autotask
   )
 
 
-file(GLOB config_files_full_path service/*)
-foreach(i ${config_files_full_path})
-  get_filename_component(i "${i}" NAME)
-  list(APPEND config_files ${i})
-endforeach()
-
-
-function(task_init name)
-  get_filename_component(task_dir "volume/${name}" REALPATH BASE_DIR)
-  foreach(i ${config_files})
-    get_filename_component(cfg_wle "${i}" NAME_WLE)
-    set(intended_path "${task_dir}/${cfg_wle}")
-    if(NOT EXISTS "${intended_path}")
-      set(task_namespace ${name})
-      set(task_id ${task_namespace})
-      configure_file(service/${i} "${intended_path}")
-    endif()
-  endforeach()
-endfunction()
-
-
-function(asm_task name)
+function(tasasm_taskk_init name)
   string(REPLACE "." "_" name ${name})
   set(name "at_${name}")
-  task_init(${name})
-  set(curr volume/${name})
-  file(GLOB files ${curr}/*)
-  target_sources(autotask PRIVATE "${files}")
-  target_include_directories(autotask PRIVATE ${curr})
+#  target_include_directories(autotask PRIVATE ${curr})
+
+  function(task_config_file file to)
+    get_filename_component(to ${to} REALPATH NAME)
+    if(NOT EXISTS "${to}")
+      set(task_namespace ${name})
+      set(task_id ${task_namespace})
+      configure_file(service/configs/${file} "${to}")
+    endif()
+  endfunction()
+
+  set(task_dir volume/${name})
+  function(task_config_file_solution file)
+    get_filename_component(file_wle ${file} NAME_WLE)
+    task_config_file(${file} ${task_dir}/${file_wle})
+  endfunction()
+
+  function(task_config_file_solution_test file)
+    get_filename_component(file_wle ${file} NAME_WLE)
+    task_config_file(${file} tests/${file_wle})
+  endfunction()
+
+  task_config_file_solution(solution.hpp.in)
+  task_config_file_solution(solution.cpp.in)
+  task_config_file_solution_test(test.cpp.in)
 endfunction()
 
 
 asm_task(2.1)
-asm_task(2.4)
+#asm_task(2.4)

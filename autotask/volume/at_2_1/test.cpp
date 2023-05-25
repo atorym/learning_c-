@@ -7,14 +7,18 @@
 
 #include <service/helper.hpp>
 
-#include <${task_include_dir}/solution.hpp>
+#include <at_2_1/solution.hpp>
 
 
 using namespace testing;
-using namespace at::${task_namespace};
+using namespace at::at_2_1;
 
 
-TEST(autotask, ${task_id}) {
-  EXPECT_EQ(<#initializer#>, <#initializer#>);
-  EXPECT_THAT(<#initializer#>, ElementsAre(<#initializer#>));
+TEST(autotask, at_2_1) {
+  for (auto const [a, args] : {
+         std::make_pair(answer::equilateral, std::make_tuple(1, 1, 1))}) {
+    std::apply([a](auto... args) {
+      ASSERT_EQ(a, solution(args...));
+    }, args);
+  }
 }

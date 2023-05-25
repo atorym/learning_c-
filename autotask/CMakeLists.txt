@@ -1,4 +1,5 @@
 add_library(autotask_sol)
+target_link_extra_lib(autotask_sol)
 
 add_executable(autotask service/helper.hpp)
 target_link_libraries(autotask

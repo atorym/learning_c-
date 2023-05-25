@@ -10,11 +10,17 @@
 #include <${task_include_dir}/solution.hpp>
 
 
+namespace at {
+
+
 using namespace testing;
-using namespace at::${task_namespace};
+using namespace ${task_namespace};
 
 
 TEST(autotask, ${task_id}) {
-  EXPECT_EQ(<#initializer#>, <#initializer#>);
-  EXPECT_THAT(<#initializer#>, ElementsAre(<#initializer#>));
+  EXPECT_EQ(<#initializer #>, <#initializer #>);
+  EXPECT_THAT(<#initializer #>, ElementsAre(<#initializer #>));
 }
+
+
+} // namespace at

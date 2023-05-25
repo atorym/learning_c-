@@ -4,7 +4,7 @@
 namespace at::at_2_1 {
 
 
-answer solution(std::uint8_t a, std::uint8_t b, std::uint8_t c) {
+answer solution(arg_t a, arg_t b, arg_t c) {
   return <#initializer #>;
 }
 

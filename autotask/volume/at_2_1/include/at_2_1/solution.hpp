@@ -11,14 +11,17 @@
 namespace at::at_2_1 {
 
 
+using arg_t = std::uint16_t;
+
+
 enum class answer : std::uint8_t {
-  equilateral, // равносторонний
-  isosceles, // равнобедренный
-  scalene, // разносторонний
+  equilateral,// равносторонний
+  isosceles,  // равнобедренный
+  scalene,    // разносторонний
 };
 
 
-answer solution(std::uint8_t a, std::uint8_t b, std::uint8_t c);
+answer solution(arg_t a, arg_t b, arg_t c);
 
 
-} // namespace at::at_2_1
+}// namespace at::at_2_1

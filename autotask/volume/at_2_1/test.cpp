@@ -10,15 +10,31 @@
 #include <at_2_1/solution.hpp>
 
 
+namespace at {
+
+
 using namespace testing;
-using namespace at::at_2_1;
+using namespace at_2_1;
 
 
 TEST(autotask, at_2_1) {
-  for (auto const [a, args] : {
-         std::make_pair(answer::equilateral, std::make_tuple(1, 1, 1))}) {
-    std::apply([a](auto... args) {
-      ASSERT_EQ(a, solution(args...));
+  for (auto const [expected, args] : {
+         std::make_pair(answer::equilateral, std::make_tuple(arg_t{1}, arg_t{1}, arg_t{1})),
+         std::make_pair(answer::equilateral, std::make_tuple(arg_t{0}, arg_t{0}, arg_t{0})),
+         std::make_pair(answer::equilateral, std::make_tuple(std::numeric_limits<arg_t>::max(), std::numeric_limits<arg_t>::max(), std::numeric_limits<arg_t>::max())),
+         std::make_pair(answer::isosceles, std::make_tuple(arg_t{1}, arg_t{1}, arg_t{10})),
+         std::make_pair(answer::isosceles, std::make_tuple(arg_t{10}, arg_t{1}, arg_t{1})),
+         std::make_pair(answer::isosceles, std::make_tuple(arg_t{1}, arg_t{10}, arg_t{1})),
+         std::make_pair(answer::scalene, std::make_tuple(arg_t{1}, arg_t{10}, arg_t{100})),
+       }) {
+    std::apply([expected = expected, args_tuple = args](auto... args) {
+      auto const answ = solution(args...);
+      ASSERT_EQ(expected, answ)
+        << "Wrong answer. Output: " << static_cast<int>(answ)
+        << "\targs: " << PrintToString(args_tuple);
     }, args);
   }
 }
+
+
+}// namespace at

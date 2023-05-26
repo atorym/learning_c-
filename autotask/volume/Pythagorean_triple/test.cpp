@@ -6,7 +6,6 @@
 //#include <gmock/gmock-more-matchers.h>
 
 #include <charconv>
-#include <optional>
 
 #include <service/helper.hpp>
 
@@ -16,6 +15,7 @@
 namespace at {
 
 
+using namespace std::literals;
 using namespace testing;
 using namespace pythagorean_triple;
 
@@ -32,12 +32,11 @@ auto prepare_spit(auto ch, auto&& f) {
 }
 
 
-// https://stackoverflow.com/a/65675200
-std::optional<rng_under_t> to_int(std::string_view input) {
+rng_under_t to_int(std::string_view input) {
   rng_under_t out;
-  std::from_chars_result const result = std::from_chars(input.data(), input.data() + input.size(), out);
-  if (result.ec != std::errc{}) {
-    return std::nullopt;
+  auto const [ptr, ec] = std::from_chars(input.data(), input.data() + input.size(), out);
+  if (ec != std::errc{} || &*input.cend() != ptr) {
+    throw std::runtime_error{"NAN. str: "s + std::string{input}};
   }
   return out;
 }
@@ -90,12 +89,13 @@ TEST(autotask, pythagorean_triple) {
        }) {
     solution(oss, rng);
     auto const answ_str = std::move(oss).str();
+    ASSERT_FALSE(answ_str.empty()) << "Returned zero size string";
     // spirit x3?
     for (auto [line_answ, line_expect] :
       ranges::views::zip(
         answ_str | _::prepare_spit('\n', [](auto rng) {
           return rng | _::prepare_spit(' ', [](auto rng) {
-            return _::to_int(std::string_view(&*rng.begin(), ranges::distance(rng))).value();
+            return _::to_int(std::string_view(&*rng.begin(), ranges::distance(rng)));
           });
         }),
         expect)) {

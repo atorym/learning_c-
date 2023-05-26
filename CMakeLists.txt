@@ -23,3 +23,4 @@ endfunction()
 
 add_subdirectory(autotask)
 add_subdirectory(sandbox)
+add_subdirectory(sort_sandbox)

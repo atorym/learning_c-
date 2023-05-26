@@ -55,3 +55,4 @@ endfunction()
 
 
 asm_task(Pythagorean_triple)
+asm_task(Palindrome_string)

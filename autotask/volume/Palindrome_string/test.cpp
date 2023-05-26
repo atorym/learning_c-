@@ -13,29 +13,25 @@
 namespace at {
 
 
+using namespace std::literals;
 using namespace testing;
 using namespace palindrome_string;
 
 
 TEST(autotask, palindrome_string) {
   for (auto const [str, expected] : {
-         std::make_pair("radar", true),
-         std::make_pair("madam", true),
-         std::make_pair("deified", true),
-         std::make_pair("level", true),
-         std::make_pair("hello", false),
-         std::make_pair("openAI", false),
-         std::make_pair("12321", true),
-         std::make_pair("abcba", true),
-         std::make_pair("python", false),
-         std::make_pair("Able was I saw Elba", true),
+         std::make_pair("radar"sv, true),
+         std::make_pair("madam"sv, true),
+         std::make_pair("deified"sv, true),
+         std::make_pair("level"sv, true),
+         std::make_pair("hello"sv, false),
+         std::make_pair("openAI"sv, false),
+         std::make_pair("12321"sv, true),
+         std::make_pair("abcba"sv, true),
+         std::make_pair("python"sv, false),
+         std::make_pair("Able was I saw Elba"sv, true),
        }) {
-    bool const actual = solution(str);
-    EXPECT_EQ(expected, actual)
-      << std::boolalpha
-      << "Wrong answer. Str: " << str
-      << "\nexpected: " << expected
-      << "\nactual: " << actual;
+    ASSERT_EQ(expected, solution(str)) << "Wrong answer. Str: " << str;
   }
 }
 

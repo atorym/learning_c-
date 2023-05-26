@@ -5,7 +5,7 @@ namespace at::palindrome_string {
 
 
 bool solution(std::string_view str) {
-
+  <#initializer#>
 }
 
 

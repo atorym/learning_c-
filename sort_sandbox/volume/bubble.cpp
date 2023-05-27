@@ -5,7 +5,7 @@ namespace at::sandbox_sort {
 
 
 array_t sort(array_t&& in) {
-  <#initializer#>
+//  <#initializer#>
 }
 
 

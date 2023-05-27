@@ -5,6 +5,8 @@
 #include <gmock/gmock-matchers.h>
 //#include <gmock/gmock-more-matchers.h>
 
+#include <range/v3/all.hpp>
+
 #include <random>
 
 #include <service/helper.hpp>
@@ -18,6 +20,7 @@ namespace at {
 using namespace std::literals;
 using namespace testing;
 using namespace sandbox_sort;
+namespace rv = ranges::views;
 
 
 namespace {
@@ -34,9 +37,9 @@ EngineT seed_non_deterministically_2nd() {
   constexpr auto numbers_needed = (sizeof(device_type) < sizeof(seedseq_type))
                                     ? (bytes_needed / sizeof(device_type))
                                     : (bytes_needed / sizeof(seedseq_type));
-  std::array<device_type, numbers_needed> numbers;
-  std::generate(std::begin(numbers), std::end(numbers), std::random_device{});
-  std::seed_seq seedseq{std::cbegin(numbers), std::cend(numbers)};
+  std::random_device rd{};
+  auto rng_num = rv::generate_n(std::ref(rd), numbers_needed) | rv::common;
+  std::seed_seq seedseq{rng_num.begin(), rng_num.end()};
   return EngineT{seedseq};
 }
 
@@ -62,7 +65,12 @@ T random(T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<T>::
 
 
 TEST(sandbox_sort, general) {
-  _::random(1, 2);
+  for (auto const i : rv::generate_n([] {
+         return _::random(0, 10);
+       },
+         100)) {
+    std::cout << i << ' ';
+  }
 }
 
 

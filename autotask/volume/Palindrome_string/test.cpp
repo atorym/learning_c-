@@ -30,7 +30,8 @@ TEST(autotask, palindrome_string) {
          std::make_pair("abcba"sv, true),
          std::make_pair("python"sv, false),
          std::make_pair("Able was I saw Elba"sv, true),
-       }) {
+         std::make_pair(""sv, true),
+  }) {
     ASSERT_EQ(expected, solution(str)) << "Wrong answer. Str: " << str;
   }
 }

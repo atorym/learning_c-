@@ -34,9 +34,8 @@ EngineT seed_non_deterministically_2nd() {
   constexpr auto numbers_needed = (sizeof(device_type) < sizeof(seedseq_type))
                                     ? (bytes_needed / sizeof(device_type))
                                     : (bytes_needed / sizeof(seedseq_type));
-  std::array<device_type, numbers_needed> numbers{};
-  std::random_device device{};
-  std::generate(std::begin(numbers), std::end(numbers), std::ref(device));
+  std::array<device_type, numbers_needed> numbers;
+  std::generate(std::begin(numbers), std::end(numbers), std::random_device{});
   std::seed_seq seedseq{std::cbegin(numbers), std::cend(numbers)};
   return EngineT{seedseq};
 }
@@ -49,9 +48,13 @@ T& random_engine() {
 }
 
 
-//template<typename T, typename RE = std::mt19937>
-//T random(T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<T>::max()) {
-//}
+template<typename T, typename RE = std::mt19937>
+T random(T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<T>::max()) {
+  return std::conditional_t<
+    std::is_floating_point_v<T>,
+    std::uniform_real_distribution<T>,
+    std::uniform_int_distribution<T>>{min, max}(random_engine<RE>());
+}
 
 
 }// namespace _
@@ -59,7 +62,7 @@ T& random_engine() {
 
 
 TEST(sandbox_sort, general) {
-  _::random_engine();
+  _::random(1, 2);
 }
 
 

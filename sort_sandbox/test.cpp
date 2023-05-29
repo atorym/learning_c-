@@ -27,8 +27,11 @@ namespace {
 namespace _ {
 
 
+using RE = std::mt19937;
+
+
 // https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p0205r1.html
-template<typename EngineT = std::mt19937, std::size_t StateSize = EngineT::state_size>
+template<typename EngineT = RE, std::size_t StateSize = EngineT::state_size>
 EngineT seed_non_deterministically_2nd() {
   using engine_type = typename EngineT::result_type;
   using device_type = std::random_device::result_type;
@@ -44,14 +47,14 @@ EngineT seed_non_deterministically_2nd() {
 }
 
 
-template<typename T = std::mt19937>
+template<typename T = RE>
 T& random_engine() {
   static auto re = seed_non_deterministically_2nd();
   return re;
 }
 
 
-template<typename T, typename RE = std::mt19937>
+template<typename T, typename RE = RE>
 T random(T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<T>::max()) {
   return std::conditional_t<
     std::is_floating_point_v<T>,
@@ -60,16 +63,76 @@ T random(T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<T>::
 }
 
 
+array_t make_array(array_t&& arr, std::size_t to) {
+  return std::move(arr) | ranges::actions::push_back(rv::iota(0u, to));
+}
+
+
+array_t make_array_downward(array_t&& arr, std::size_t from) {
+  if (from > 1) {
+    return make_array_downward(make_array(std::move(arr), from), from - 1);
+  }
+  return std::move(arr);
+}
+
+
 }// namespace _
 }// namespace
 
 
 TEST(sandbox_sort, general) {
-  for (auto const i : rv::generate_n([] {
-         return _::random(0, 10);
-       },
-         100)) {
-    std::cout << i << ' ';
+  constexpr auto max = 2000;
+  constexpr auto factor_lo = 0.01;
+  constexpr auto n_lo = 5;
+  for (auto const [get, msg] : {
+       std::pair{static_cast<array_t (*)()>([] {
+         return rv::iota(0, 10) | ranges::to<array_t>;
+       }), "0..lo"},
+       std::pair{static_cast<array_t (*)()>([] {
+         return rv::iota(0, 10) | rv::reverse | ranges::to<array_t>;
+       }), "0..lo reverse"},
+       std::pair{static_cast<array_t (*)()>([] {
+         return array_t{};
+       }), "empty"},
+       std::pair{static_cast<array_t (*)()>([] {
+         auto out = _::make_array({}, max * factor_lo);
+         ranges::shuffle(out, _::random_engine());
+         return out;
+       }), "0..lo shuffled"},
+       std::pair{static_cast<array_t (*)()>([] {
+         auto out = _::make_array({}, max);
+         ranges::shuffle(out, _::random_engine());
+         return out;
+       }), "0..max shuffled"},
+       std::pair{static_cast<array_t (*)()>([] {
+         return rv::repeat(std::numeric_limits<element_t>::min()) | rv::take(n_lo) | ranges::to<array_t>;
+       }), "n_lo min"},
+       std::pair{static_cast<array_t (*)()>([] {
+         return rv::repeat(std::numeric_limits<element_t>::max()) | rv::take(n_lo) | ranges::to<array_t>;
+       }), "n_lo max"},
+       std::pair{static_cast<array_t (*)()>([] {
+         return rv::generate_n([] {
+           return _::random<element_t>();
+         }, max * factor_lo) | ranges::to<array_t>;
+       }), "rand lo"},
+       std::pair{static_cast<array_t (*)()>([] {
+         return rv::generate_n([] {
+           return _::random<element_t>();
+         }, max) | ranges::to<array_t>;
+       }), "rand max"},
+       std::pair{static_cast<array_t (*)()>([] {
+         auto out = _::make_array_downward({}, max * factor_lo);
+         ranges::shuffle(out, _::random_engine());
+         return out;
+       }), "0..lo pyramid"},
+       std::pair{static_cast<array_t (*)()>([] {
+         auto out = _::make_array_downward({}, max);
+         ranges::shuffle(out, _::random_engine());
+         return out;
+       }), "0..max pyramid"},
+     }) {
+    array_t const source = get();
+    ASSERT_THAT(source, WhenSorted(sort(source))) << "Wrong answer. " << msg;
   }
 }
 

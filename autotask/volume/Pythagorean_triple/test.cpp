@@ -7,8 +7,6 @@
 
 #include <charconv>
 
-#include <service/helper.hpp>
-
 #include <Pythagorean_triple/solution.hpp>
 
 

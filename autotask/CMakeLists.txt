@@ -7,7 +7,7 @@ function(asm_task name)
   target_pch(${sol})
 
   set(test at_${name})
-  add_executable(${test} service/helper.hpp)
+  add_executable(${test})
   target_link_libraries(${test}
     ${sol}
     gtest_main

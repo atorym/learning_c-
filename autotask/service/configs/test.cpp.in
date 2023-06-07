@@ -7,6 +7,8 @@
 
 #include <range/v3/all.hpp>
 
+#include <service_shared/helper.hpp>
+
 #include <${task_include_dir}/solution.hpp>
 
 

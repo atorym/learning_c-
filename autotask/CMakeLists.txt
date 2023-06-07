@@ -10,6 +10,7 @@ function(asm_task name)
   add_executable(${test})
   target_link_libraries(${test}
     ${sol}
+    service_shared
     gtest_main
     gmock
     )
@@ -56,3 +57,4 @@ endfunction()
 
 asm_task(Pythagorean_triple)
 asm_task(Palindrome_string)
+asm_task(maximum_subarray_summ)

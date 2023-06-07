@@ -57,4 +57,5 @@ endfunction()
 
 asm_task(Pythagorean_triple)
 asm_task(Palindrome_string)
-asm_task(maximum_subarray_summ)
+#asm_task(maximum_subarray_summ)
+asm_task(Parentheses_balance_check)

@@ -1,84 +1,167 @@
+#include <cassert>
 #include <cstdint>
+#include <cstdlib>
+#include <ctime>
 #include <iostream>
-#include <random>
+#include <limits>
 #include <string>
 #include <string_view>
 
 
-std::int16_t ask_user();
-int get_random_number(int min, int max);
+namespace {
+namespace _ {
 
 
-int main() {
-  //Настройка массива
-  constexpr std::int16_t amount_of_name = 4;
-  std::string_view name[amount_of_name] = {"Dima", "Akaky", "Anatoly", "Damokl"};
-  std::string_view random_name = name[get_random_number(0, amount_of_name - 1)];
+constexpr std::string_view names[]{
+  "Domestos",
+  "Artom",
+  "Oleg",
+  "Obama",
+  "Shpachenkof",
+};
 
-  std::string user_word_before;
-  std::string user_word_after;
-  //Основной loop программы
-  while (1) {
-    //Спрашиваем число
-    std::int16_t user_number{0};
-    user_number = ask_user();
-    std::string current_word;
 
-    switch (user_number) {
-      case 1:
-        std::cout << "What you want to enter?" << '\n';
-        std::cin >> current_word;
-        user_word_before += current_word;
-        std::cout << user_word_before << ' ' << random_name << ' ' << user_word_after << '\n';
-        break;
+enum Act : char {
+  forward = '1',
+  backward,
+  forward_repeat,
+  backward_repeat,
+  i_need_help,
+  go_fuck,
+};
 
-      case 2:
-        std::cout << "What you want to enter?" << '\n';
-        std::cin >> current_word;
-        user_word_after += current_word;
-        std::cout << user_word_before << ' ' << random_name << ' ' << user_word_after << '\n';
-        break;
 
-      case 3:
-        return EXIT_SUCCESS;
+enum class Errc : std::uint8_t {
+  no_error,
+  wrong_input,
+};
 
-      case 4:
-        std::cout << "....Retrying...." << '\n'
-                  << "................" << '\n';
-        user_word_after = "";
-        user_word_before = "";
-        random_name = name[get_random_number(0, amount_of_name)];
-        break;
 
-      default: {
-        std::cout << "Your number isn't correct. Repeat." << '\n';
-        break;
-      }
+using repeat_accum_t = std::uint16_t;
+
+
+}// namespace _
+}// namespace
+
+
+void menu() {
+  std::cout << "\t\t\tOptions:\n"
+            << "\t'" << _::Act::forward << "' insert forward <enter>\n"
+            << "\t'" << _::Act::backward << "' paste back <input>\n"
+            << "\t'" << _::Act::forward_repeat << "' <n> times insert forward <enter>\n"
+            << "\t'" << _::Act::backward_repeat << "' <n> times paste back <enter>\n"
+            << "\t'" << _::Act::i_need_help << "' show help\n"
+            << "\t'" << _::Act::go_fuck << "' go fuck\n";
+}
+
+
+void help() {
+  std::cout << "This program does something:\n";
+  menu();
+}
+
+
+void stuff(_::Act const act, std::string_view const input, _::repeat_accum_t const accum) {
+  if (accum) {
+    switch (act) {
+      // показать текущий шаг для многошагового запуска
+      case _::Act::forward_repeat:
+      case _::Act::backward_repeat:
+        std::cout << '[' << accum << "] ";
     }
-    if (user_number == 3) {
-      break;
+
+    auto const sel_name = _::names[std::rand() % std::size(_::names)];
+    switch (act) {
+      case _::Act::forward:
+      case _::Act::forward_repeat:
+        std::cout << input << ' ' << sel_name << '\n';
+        break;
+
+      case _::Act::backward:
+      case _::Act::backward_repeat:
+        std::cout << sel_name << ' ' << input << '\n';
+        break;
+
+      default:
+        assert(false);// в дебажном варианте сборки уронит приложение и остановит дебагер в этом месте
     }
+    stuff(act, input, accum - 1);
   }
+}
+
+
+_::Errc stuff(_::Act const act) {
+  std::cout << "What do you have there?: " << std::flush;
+  std::string       input;
+  _::repeat_accum_t accum = 1;
+
+  switch (act) {
+    case _::Act::forward_repeat:
+    case _::Act::backward_repeat:
+      std::cin >> accum;
+      // если введенное не соответствует читаемому типу данных
+      if (std::cin.fail()) {
+        // чищу ввод cin (info https://stackoverflow.com/a/10349885/13161739)
+        std::cin.clear();                                                  //clear bad input flag
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');//discard input
+        // возвращаю код ошибки
+        return _::Errc::wrong_input;
+      }
+
+    case _::Act::backward:
+    case _::Act::forward:
+      std::cin >> input;
+      stuff(act, input, accum);
+      break;
+
+    default:
+      assert(false);
+  }
+  return _::Errc::no_error;
+}
+
+
+void loop() {
+  char act;
+  do {
+    std::cout << "input: " << std::flush;
+    // переставляю cin на конец буфера,
+    // на случай если в прошлый раз при чтении было введено что то лишнее (info: https://stackoverflow.com/a/46411174/13161739)
+    std::cin.seekg(0, std::ios::end);
+    std::cin.clear();
+    std::cin >> act;
+
+    switch (act) {
+      case _::Act::go_fuck:
+        break;
+
+      case _::Act::i_need_help:
+        help();
+        continue;
+
+      case _::Act::forward:
+      case _::Act::backward:
+      case _::Act::forward_repeat:
+      case _::Act::backward_repeat:
+        if (stuff(static_cast<_::Act>(act)) == _::Errc::no_error) {
+          continue;
+        }
+
+      default:
+        std::cout << "Brother, you seem to have mixed something up\n";
+    }
+
+  } while (act != _::Act::go_fuck);
+
+  std::cout << "Arividerchi\n";
+}
+
+
+int main(int argc, char* argv[]) {
+  std::srand(std::time(nullptr));// rand init
+
+  help();
+  loop();
+
   return EXIT_SUCCESS;
-}
-
-std::int16_t ask_user() {
-  std::cout << "What you want to do?" << '\n'
-            << "1)Enter a word before name" << '\n'
-            << "2)Enter word after name" << '\n'
-            << "3)Exit" << '\n'
-            << "4)Retry" << '\n';
-  std::int16_t user_numer = 0;
-  std::cin >> user_numer;
-  return user_numer;
-}
-
-//Получаем рандомное число из заданного диапазона. Доделать!
-int get_random_number(int min, int max) {
-  //Настройка генератора случайных чисел Вихря Мерсенна.
-  std::random_device rd;
-  std::mt19937 mersenne(rd());
-  //Генерация случайного числа в заданном диапазоне
-  std::uniform_int_distribution<> distrib(min, max);
-  return distrib(mersenne);
 }

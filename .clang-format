@@ -3,6 +3,7 @@ BasedOnStyle: LLVM
 AccessModifierOffset: -2
 AlignAfterOpenBracket: DontAlign
 #AlignConsecutiveAssignments: None
+AlignOperands: DontAlign
 AllowAllArgumentsOnNextLine: false
 AllowAllConstructorInitializersOnNextLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
@@ -18,6 +19,7 @@ BreakBeforeBraces: Custom
 BraceWrapping:
   AfterCaseLabel: false
   AfterClass: false
+  AfterControlStatement: Never
   AfterEnum: false
   AfterFunction: false
   AfterNamespace: false
@@ -63,6 +65,9 @@ SpacesInSquareBrackets: false
 TabWidth: 2
 UseTab: Never
 
+AlignConsecutiveMacros: AcrossEmptyLines
+AlignConsecutiveDeclarations: Consecutive
+AlignConsecutiveAssignments: Consecutive
 AllowShortBlocksOnASingleLine: Never
 BreakInheritanceList: BeforeComma
-
+IndentRequires: false

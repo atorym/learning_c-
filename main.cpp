@@ -1,3 +1,5 @@
+
+
 #include <cassert>
 #include <cstdint>
 #include <cstdlib>
@@ -92,7 +94,7 @@ void stuff(_::Act const act, std::string_view const input, _::repeat_accum_t con
 
 _::Errc stuff(_::Act const act) {
   std::cout << "What do you have there?: " << std::flush;
-  std::string       input;
+  std::string input;
   _::repeat_accum_t accum = 1;
 
   switch (act) {
@@ -110,7 +112,10 @@ _::Errc stuff(_::Act const act) {
 
     case _::Act::backward:
     case _::Act::forward:
-      std::cin >> input;
+      //      std::cin >> input;
+      std::cin.ignore(32767, '\n');
+      std::getline(std::cin, input);
+
       stuff(act, input, accum);
       break;
 

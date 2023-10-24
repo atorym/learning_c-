@@ -53,9 +53,8 @@ target_compile_definitions(${target} PRIVATE
   PROJECT_VERSION="${PROJECT_VERSION}"
   )
 
-if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+
   target_precompile_headers(${target} PRIVATE
     "<QDebug>"
     "<range/v3/all.hpp>"
     )
-endif()

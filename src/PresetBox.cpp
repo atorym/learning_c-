@@ -4,6 +4,8 @@
 
 #include <PresetBox.hpp>
 
+#include <range/v3/algorithm/fold_left.hpp>
+
 
 namespace pg {
 

@@ -104,8 +104,8 @@ _::Errc stuff(_::Act const act) {
       // если введенное не соответствует читаемому типу данных
       if (std::cin.fail()) {
         // чищу ввод cin (info https://stackoverflow.com/a/10349885/13161739)
-        std::cin.clear();                                                  //clear bad input flag
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');//discard input
+        std::cin.clear();                                                      //clear bad input flag
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max() - 1, '\n');//discard input
         // возвращаю код ошибки
         return _::Errc::wrong_input;
       }
@@ -113,7 +113,7 @@ _::Errc stuff(_::Act const act) {
     case _::Act::backward:
     case _::Act::forward:
       //      std::cin >> input;
-      std::cin.ignore(32767, '\n');
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max() - 1, '\n');
       std::getline(std::cin, input);
 
       stuff(act, input, accum);

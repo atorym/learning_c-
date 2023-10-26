@@ -2,7 +2,7 @@
 // Created by dym on 24.10.23.
 //
 
-#include <CapacityBox.hpp>
+#include <pswgen/CapacityBox.hpp>
 
 
 namespace pg {

@@ -4,22 +4,31 @@
 
 #pragma once
 
+#include <iosfwd>
 #include <optional>
 
+#include <QScopedPointer>
 #include <QWidget>
 
-#include "ui_GenPage.h"
+
+namespace Ui {
+class GenPage;
+}
 
 
 namespace pg {
 
 
-class GenPage final : public QWidget
-    , public Ui::GenPage {
+struct ImplContext;
+
+
+class GenPage final : public QWidget {
   Q_OBJECT
 public:
   ~GenPage() override;
   GenPage(QWidget* parent = nullptr, Qt::WindowFlags f = {});
+
+  ImplContext collectContext(std::ostream& os) const;
 
 private:
   void auto_generate_cons_update(bool connect);
@@ -32,6 +41,7 @@ private slots:
   void on_pb_about_released() const;
 
 private:
+  QScopedPointer<Ui::GenPage> const      ui;
   std::optional<QMetaObject::Connection> auto_generate_con_;
 };
 

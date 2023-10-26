@@ -42,7 +42,7 @@ struct ImplContext final {
 };
 
 
-void impl(ImplContext ctx);
+void impl(ImplContext const& ctx);
 
 
 }// namespace pg

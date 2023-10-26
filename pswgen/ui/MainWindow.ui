@@ -32,7 +32,7 @@
       </widget>
       <widget class="pg::DistributionPage" name="distribution">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <attribute name="title">
         <string>Distribution</string>
@@ -48,7 +48,7 @@
      <x>0</x>
      <y>0</y>
      <width>493</width>
-     <height>27</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
@@ -58,13 +58,13 @@
   <customwidget>
    <class>pg::GenPage</class>
    <extends>QWidget</extends>
-   <header location="global">GenPage.hpp</header>
+   <header location="global">pswgen/GenPage.hpp</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>pg::DistributionPage</class>
    <extends>QWidget</extends>
-   <header location="global">DistributionPage.hpp</header>
+   <header location="global">pswgen/DistributionPage.hpp</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

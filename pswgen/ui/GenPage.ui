@@ -162,13 +162,13 @@
   <customwidget>
    <class>pg::PresetBox</class>
    <extends>QGroupBox</extends>
-   <header location="global">PresetBox.hpp</header>
+   <header location="global">pswgen/PresetBox.hpp</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>pg::CapacityBox</class>
    <extends>QGroupBox</extends>
-   <header location="global">CapacityBox.hpp</header>
+   <header location="global">pswgen/CapacityBox.hpp</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

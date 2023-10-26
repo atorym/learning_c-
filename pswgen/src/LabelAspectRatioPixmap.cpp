@@ -2,7 +2,7 @@
 // Created by dym on 24.10.23.
 //
 
-#include <LabelAspectRatioPixmap.hpp>
+#include <pswgen/LabelAspectRatioPixmap.hpp>
 
 
 namespace pg {

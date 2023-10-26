@@ -84,7 +84,7 @@
   <customwidget>
    <class>pg::LabelAspectRatioPixmap</class>
    <extends>QLabel</extends>
-   <header location="global">LabelAspectRatioPixmap.hpp</header>
+   <header location="global">pswgen/LabelAspectRatioPixmap.hpp</header>
   </customwidget>
  </customwidgets>
  <resources>

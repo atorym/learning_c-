@@ -1,7 +1,8 @@
-#include <iostream> 
+#include <cstdlib>
 
 
-int main() {
+int main(int argc, char* argv[]) {
+  <#initialize#>
 
-  return 0;
+  return EXIT_SUCCESS;
 }

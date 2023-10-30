@@ -1,6 +1,9 @@
-[submodule "range-v3"]
-	path = range-v3
+[submodule "external/range-v3"]
+	path = external/range-v3
 	url = https://github.com/ericniebler/range-v3.git
-[submodule "fmt"]
-	path = fmt
+[submodule "external/fmt"]
+	path = external/fmt
 	url = https://github.com/fmtlib/fmt.git
+[submodule "external/gtest"]
+	path = external/gtest
+	url = https://github.com/google/googletest.git

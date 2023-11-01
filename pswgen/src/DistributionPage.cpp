@@ -35,6 +35,9 @@ DistributionPage::DistributionPage(QWidget* parent)
     : QWidget{parent}
     , ui{new Ui::DistributionPage}
     , bars_{(ui->setupUi(this), new QCPBars{ui->plot->xAxis, ui->plot->yAxis})} {
+  ui->plot->xAxis->grid()->setVisible(false);
+  ui->plot->xAxis->setTickLength(0, 0);
+  ui->plot->yAxis->setVisible(false);
 }
 
 
@@ -52,8 +55,9 @@ void DistributionPage::on_pb_run_released() const {
       impl(*preset.ctx);
     }
   }
+
   {
-    auto        ticker = QSharedPointer<QCPAxisTickerText>::create();
+    auto        xTicker = QSharedPointer<QCPAxisTickerText>::create();
     char        xAxisMax{};
     std::size_t yAxisMax{};
     namespace ra = ranges::actions;
@@ -66,13 +70,13 @@ void DistributionPage::on_pb_run_released() const {
            | rv::enumerate) {
       ++xAxisMax;
       auto const v = ranges::distance(group);
-      yAxisMax = std::max<std::size_t>(yAxisMax, v);
       bars_->addData(i, v);
-      ticker->addTick(i, QString{group.front()});
+      yAxisMax = std::max<std::size_t>(yAxisMax, v);
+      xTicker->addTick(i, QString{group.front()});
     }
     ui->plot->xAxis->setRange(-1, xAxisMax);
     ui->plot->yAxis->setRange(0, yAxisMax + 1);
-    ui->plot->xAxis->setTicker(std::move(ticker));
+    ui->plot->xAxis->setTicker(std::move(xTicker));
   }
 
   ui->plot->replot();

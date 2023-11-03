@@ -4,6 +4,9 @@
 
 #include <pswgen/impl.hpp>
 
+#include <random>
+#include <ostream>
+
 
 namespace pg {
 namespace {
@@ -22,7 +25,11 @@ auto random_engine = [] {
 
 //НАЧАЛО КОДА АРТёМА
 std::size_t mersenne_range(std::size_t, std::size_t);
-void array_summ(std::vector<char>, std::vector<char>);
+void array_summ(auto array1, auto array2){
+  for (std::size_t i = 0; i < array2.size(); ++i) {
+    array1.push_back(array2[i]);
+  }
+}
 
 
 void impl(ImplContext const& ctx) {
@@ -80,12 +87,6 @@ std::size_t mersenne_range(std::size_t min, std::size_t max) {
   return distrib(mersenne);
 }
 
-//функция push_back одного массива к другому
-void array_summ(std::vector<char>& array1, std::vector<char>& array2) {
-  for (std::size_t i = 0; i < array2.size(); ++i) {
-    array1.push_back(array2[i]);
-  }
-}
 
 //КОНЕЦ КОДА АРТёМА
 

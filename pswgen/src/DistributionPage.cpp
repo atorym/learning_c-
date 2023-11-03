@@ -51,9 +51,11 @@ void DistributionPage::on_pb_run_released() const {
     };
     emit initPreset(&preset, {});
 
+    auto const start = std::chrono::high_resolution_clock::now();
     while (_::availSize(*ss) < ui->sb_samples->value()) {
       impl(*preset.ctx);
     }
+    ui->l_elapsed->setText(QString::number(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count()) + "ms");
   }
 
   {

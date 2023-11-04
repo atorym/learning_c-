@@ -7,7 +7,7 @@
 #include "ui_MainWindow.h"
 
 
-namespace pg {
+namespace lc {
 
 
 MainWindow::~MainWindow() = default;
@@ -21,4 +21,4 @@ MainWindow::MainWindow(QWidget* parent)
 }
 
 
-}// namespace pg
+}// namespace lc

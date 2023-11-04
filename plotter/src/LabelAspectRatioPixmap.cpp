@@ -5,7 +5,7 @@
 #include <plotter/LabelAspectRatioPixmap.hpp>
 
 
-namespace pg {
+namespace lc {
 
 
 LabelAspectRatioPixmap::~LabelAspectRatioPixmap() = default;
@@ -47,4 +47,4 @@ void LabelAspectRatioPixmap::resizeEvent(QResizeEvent* e) {
 }
 
 
-}// namespace pg
+}// namespace lc

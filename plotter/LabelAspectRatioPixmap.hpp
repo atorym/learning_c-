@@ -7,7 +7,7 @@
 #include <QLabel>
 
 
-namespace pg {
+namespace lc {
 
 
 // https://stackoverflow.com/a/22618496/13161739
@@ -32,4 +32,4 @@ private:
 };
 
 
-}// namespace pg
+}// namespace lc

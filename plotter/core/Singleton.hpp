@@ -12,7 +12,7 @@
 #include <plotter/core/finally.hpp>
 
 
-namespace pg {
+namespace lc {
 
 
 enum class SingletonLivetimeMode : std::uint8_t {
@@ -91,4 +91,4 @@ private:
 };
 
 
-}// namespace pg
+}// namespace lc

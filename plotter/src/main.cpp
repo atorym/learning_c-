@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
   }
 #endif
 
-  pg::MainWindow root;
+  lc::MainWindow root;
   root.show();
 
   return QApplication::exec();

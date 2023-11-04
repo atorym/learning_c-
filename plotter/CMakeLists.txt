@@ -5,7 +5,6 @@ add_subdirectory(core)
 
 
 add_executable(${target}
-  rc/rc.qrc
   src/main.cpp
   src/metatypes.cpp
   MainWindow.hpp src/MainWindow.cpp
@@ -26,7 +25,7 @@ target_include_directories(${target} PRIVATE
 set_target_properties(${target} PROPERTIES
   AUTOMOC ON
   AUTOUIC ON
-  AUTORCC ON
+#  AUTORCC ON
   INCLUDE_CURRENT_DIR ON
   AUTOUIC_SEARCH_PATHS ui
   $<$<OR:$<CONFIG:Release>,$<CONFIG:MinSizeRel>>:INTERPROCEDURAL_OPTIMIZATION ON>

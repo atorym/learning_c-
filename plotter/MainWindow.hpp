@@ -13,7 +13,7 @@ class MainWindow;
 }
 
 
-namespace pg {
+namespace lc {
 
 
 class MainWindow final : public QMainWindow {
@@ -27,4 +27,4 @@ private:
 };
 
 
-}// namespace pg
+}// namespace lc

@@ -7,7 +7,7 @@
 #include <utility>
 
 
-namespace pg {
+namespace lc {
 
 
 template<typename F>
@@ -44,4 +44,4 @@ constexpr auto finally(F&& f) {
 }
 
 
-}// namespace pg
+}// namespace lc

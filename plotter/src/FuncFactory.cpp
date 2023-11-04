@@ -30,6 +30,17 @@ std::span<FuncFactory::Func const> FuncFactory::get() {
         return std::cos(x);
       },
     },
+    Func{
+      .name = "Parabolic",
+      .previewArea{
+        .xAxis{-5, 5},
+        .yAxis{-5, 5},
+      },
+      .ptr = [](double x) -> double {
+        int a = x;
+        return a*a;
+      },
+    },
   };
   return out;
 }

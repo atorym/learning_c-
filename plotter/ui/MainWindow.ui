@@ -19,14 +19,36 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
+   <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
      <widget class="QCustomPlot" name="qcp_plot" native="true"/>
     </item>
-    <item>
-     <widget class="lc::ListFunc" name="lw_func"/>
-    </item>
    </layout>
+  </widget>
+  <widget class="QDockWidget" name="dock">
+   <property name="features">
+    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="root">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="lc::ListFunc" name="lw_func"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pb_center">
+       <property name="text">
+        <string>Центрировать</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
  </widget>
  <customwidgets>

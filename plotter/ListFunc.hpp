@@ -7,6 +7,9 @@
 #include <QListWidget>
 
 
+class QButtonGroup;
+
+
 namespace lc {
 
 
@@ -18,6 +21,9 @@ public:
 
 signals:
   void selectedFunction(std::size_t, QPrivateSignal) const;
+
+private:
+  QButtonGroup* const rb_group_;
 };
 
 

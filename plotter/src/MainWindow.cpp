@@ -47,12 +47,7 @@ MainWindow::MainWindow(QWidget* parent)
 
 void MainWindow::onSelectedFunction(std::size_t index) {
   if (!std::exchange(func_current_, &FuncFactory::get()[index])) {
-    for (auto const [axis, rng] : {
-           std::pair{ui->qcp_plot->xAxis, func_current_->previewArea.xAxis},
-           std::pair{ui->qcp_plot->yAxis, func_current_->previewArea.yAxis},
-         }) {
-      axis->setRange(rng.min, rng.max);
-    }
+    on_pb_center_released();
 
     for (auto const axis : {ui->qcp_plot->xAxis, ui->qcp_plot->yAxis}) {
       QObject::connect(axis, qOverload<const QCPRange&>(&QCPAxis::rangeChanged), rescale_delay_, qOverload<>(&QTimer::start));
@@ -68,8 +63,6 @@ void MainWindow::qcp_replot() {
     return;
   }
 
-  qDebug() << __FUNCTION__;
-
   graph_->data()->clear();
   auto const plot_width = ui->qcp_plot->width();
   namespace rv = ranges::views;
@@ -80,6 +73,16 @@ void MainWindow::qcp_replot() {
   }
 
   ui->qcp_plot->replot();
+}
+
+
+void MainWindow::on_pb_center_released() const {
+  for (auto const [axis, rng] : {
+         std::pair{ui->qcp_plot->xAxis, func_current_->previewArea.xAxis},
+         std::pair{ui->qcp_plot->yAxis, func_current_->previewArea.yAxis},
+       }) {
+    axis->setRange(rng.min, rng.max);
+  }
 }
 
 

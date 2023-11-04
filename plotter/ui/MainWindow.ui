@@ -10,6 +10,11 @@
     <height>480</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <pointsize>16</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
@@ -19,7 +24,7 @@
      <widget class="QCustomPlot" name="qcp_plot" native="true"/>
     </item>
     <item>
-     <widget class="QListView" name="lv_mode"/>
+     <widget class="lc::ListFunc" name="lw_func"/>
     </item>
    </layout>
   </widget>
@@ -30,6 +35,11 @@
    <extends>QWidget</extends>
    <header location="global">qcustomplot.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>lc::ListFunc</class>
+   <extends>QListWidget</extends>
+   <header location="global">plotter/ListFunc.hpp</header>
   </customwidget>
  </customwidgets>
  <resources/>

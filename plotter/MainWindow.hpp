@@ -7,8 +7,10 @@
 #include <QMainWindow>
 #include <QScopedPointer>
 
+#include <plotter/FuncFactory.hpp>
 
-class QStandardItemModel;
+
+class QCPGraph;
 
 
 namespace Ui {
@@ -25,9 +27,13 @@ public:
   ~MainWindow() override;
   MainWindow(QWidget* parent = nullptr);
 
+private slots:
+  void onSelectedFunction(std::size_t index) const;
+
 private:
   QScopedPointer<Ui::MainWindow> const ui;
-  QStandardItemModel* const model_;
+  QCPGraph* const graph_;
+  FuncFactory::Func const* func_current_ = nullptr;
 };
 
 

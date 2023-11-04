@@ -59,11 +59,14 @@ void impl(ImplContext const& ctx) {
   }
 
   //генерируем и выводим пароли х раз, х-го размера
-  for (std::size_t i = 0; i < ctx.count; ++i) {
-    for (std::size_t j = 0; j < mersenne_range(ctx.range.min, ctx.range.max); ++j) {
-      ctx.os_display << buffer[mersenne_range(0, buffer.size())];
+  if (!buffer.empty()) {
+    for (std::size_t i = 0; i < ctx.count; ++i) {
+      for (std::size_t j = 0; j < mersenne_range(ctx.range.min, ctx.range.max); ++j) {
+
+        ctx.os_display << buffer.at(mersenne_range(0, buffer.size()-1));
+      }
+      ctx.os_display << '\n';
     }
-    ctx.os_display << '\n';
   }
 }
 

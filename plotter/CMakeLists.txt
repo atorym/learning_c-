@@ -9,7 +9,8 @@ add_executable(${target}
   src/metatypes.cpp
   MainWindow.hpp src/MainWindow.cpp
   LabelAspectRatioPixmap.hpp src/LabelAspectRatioPixmap.cpp
-)
+  GraphMethodRadioDelegate.hpp src/GraphMethodRadioDelegate.cpp
+  )
 
 target_link_libraries(${target} PRIVATE
   range-v3::range-v3

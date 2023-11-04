@@ -8,6 +8,9 @@
 #include <QScopedPointer>
 
 
+class QStandardItemModel;
+
+
 namespace Ui {
 class MainWindow;
 }
@@ -24,6 +27,7 @@ public:
 
 private:
   QScopedPointer<Ui::MainWindow> const ui;
+  QStandardItemModel* const model_;
 };
 
 

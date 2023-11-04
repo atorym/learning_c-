@@ -12,7 +12,7 @@
   </property>
   <property name="font">
    <font>
-    <pointsize>16</pointsize>
+    <pointsize>14</pointsize>
    </font>
   </property>
   <property name="windowTitle">
@@ -39,6 +39,49 @@
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="lc::ListFunc" name="lw_func"/>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,1">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Elapsed:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="frame">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QLabel" name="l_elapsed">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </item>
      <item>
       <widget class="QPushButton" name="pb_center">

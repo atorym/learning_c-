@@ -65,12 +65,17 @@ void MainWindow::qcp_replot() {
 
   graph_->data()->clear();
   auto const plot_width = ui->qcp_plot->width();
+
+  auto const start = std::chrono::high_resolution_clock::now();
   namespace rv = ranges::views;
   for (auto const x : rv::iota(0, plot_width) | rv::transform([plot_width, rng = ui->qcp_plot->xAxis->range()](auto x) {
          return _::map(x, 0, plot_width, rng.lower, rng.upper);
        })) {
     graph_->addData(x, func_current_->ptr(x));
   }
+  ui->l_elapsed->setText(QString::number(
+                           std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count())
+                         + "μs");
 
   ui->qcp_plot->replot();
 }

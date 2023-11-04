@@ -32,6 +32,8 @@ MainWindow::MainWindow(QWidget* parent)
     , ui{new Ui::MainWindow}
     , graph_{(ui->setupUi(this), ui->qcp_plot->addGraph())} {
 
+  resizeDocks({ui->dock}, {1}, Qt::Horizontal);
+
   rescale_delay_->setSingleShot(true);
   rescale_delay_->setInterval(100);
 

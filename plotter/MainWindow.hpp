@@ -11,6 +11,7 @@
 
 
 class QCPGraph;
+class QTimer;
 
 
 namespace Ui {
@@ -28,9 +29,11 @@ public:
   MainWindow(QWidget* parent = nullptr);
 
 private slots:
-  void onSelectedFunction(std::size_t index) const;
+  void onSelectedFunction(std::size_t index);
+  void qcp_replot();
 
 private:
+  QTimer* const rescale_delay_;
   QScopedPointer<Ui::MainWindow> const ui;
   QCPGraph* const graph_;
   FuncFactory::Func const* func_current_ = nullptr;

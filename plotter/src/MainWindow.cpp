@@ -4,6 +4,8 @@
 
 #include <plotter/MainWindow.hpp>
 
+#include <QTimer>
+
 #include "ui_MainWindow.h"
 
 
@@ -26,30 +28,57 @@ MainWindow::~MainWindow() = default;
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow{parent}
+    , rescale_delay_{new QTimer{this}}
     , ui{new Ui::MainWindow}
     , graph_{(ui->setupUi(this), ui->qcp_plot->addGraph())} {
+
+  rescale_delay_->setSingleShot(true);
+  rescale_delay_->setInterval(100);
+
   setWindowTitle(QString{PROJECT_NAME} + " v" + PROJECT_VERSION);
 
   ui->qcp_plot->setInteraction(QCP::iRangeDrag, true);
   ui->qcp_plot->setInteraction(QCP::iRangeZoom, true);
 
+  QObject::connect(rescale_delay_, &QTimer::timeout, this, &MainWindow::qcp_replot);
   QObject::connect(ui->lw_func, &ListFunc::selectedFunction, this, &MainWindow::onSelectedFunction);
 }
 
 
-void MainWindow::onSelectedFunction(std::size_t index) const {
-  graph_->data()->clear();
-  auto const func = FuncFactory::get()[index];
+void MainWindow::onSelectedFunction(std::size_t index) {
+  if (!std::exchange(func_current_, &FuncFactory::get()[index])) {
+    for (auto const [axis, rng] : {
+           std::pair{ui->qcp_plot->xAxis, func_current_->previewArea.xAxis},
+           std::pair{ui->qcp_plot->yAxis, func_current_->previewArea.yAxis},
+         }) {
+      axis->setRange(rng.min, rng.max);
+    }
 
-  auto const plot_width = ui->qcp_plot->width();
-  namespace rv = ranges::views;
-  for (auto const x : rv::iota(0, plot_width) | rv::transform([rng = func.previewRange, plot_width](auto x) {
-         return _::map(x, 0, plot_width, rng.min, rng.max);
-       })) {
-    graph_->addData(x, func.ptr(x));
+    for (auto const axis : {ui->qcp_plot->xAxis, ui->qcp_plot->yAxis}) {
+      QObject::connect(axis, qOverload<const QCPRange&>(&QCPAxis::rangeChanged), rescale_delay_, qOverload<>(&QTimer::start));
+    }
   }
 
-  ui->qcp_plot->rescaleAxes();
+  qcp_replot();
+}
+
+
+void MainWindow::qcp_replot() {
+  if (!func_current_) {
+    return;
+  }
+
+  qDebug() << __FUNCTION__;
+
+  graph_->data()->clear();
+  auto const plot_width = ui->qcp_plot->width();
+  namespace rv = ranges::views;
+  for (auto const x : rv::iota(0, plot_width) | rv::transform([plot_width, rng = ui->qcp_plot->xAxis->range()](auto x) {
+         return _::map(x, 0, plot_width, rng.lower, rng.upper);
+       })) {
+    graph_->addData(x, func_current_->ptr(x));
+  }
+
   ui->qcp_plot->replot();
 }
 

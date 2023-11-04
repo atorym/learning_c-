@@ -19,7 +19,11 @@ public:
     struct PreviewRange final {
       double min;
       double max;
-    } previewRange;
+    };
+    struct PreviewArea final {
+      PreviewRange xAxis;
+      PreviewRange yAxis;
+    } previewArea;
 
     using Ptr = double (*)(double);
     Ptr ptr;

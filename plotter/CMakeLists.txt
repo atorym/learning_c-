@@ -8,14 +8,16 @@ add_executable(${target}
   src/main.cpp
   src/metatypes.cpp
   MainWindow.hpp src/MainWindow.cpp
-  LabelAspectRatioPixmap.hpp src/LabelAspectRatioPixmap.cpp
+  AspectRatioPixmap.hpp src/AspectRatioPixmap.cpp
   ListFunc.hpp src/ListFunc.cpp
   FuncFactory.hpp src/FuncFactory.cpp
+  AboutForm.hpp src/AboutForm.cpp
   )
 
 target_link_libraries(${target} PRIVATE
   range-v3::range-v3
   Qt5::Widgets
+  Qt5::Network
   qcustomplot
   ${PROJECT_NAME}_core
 )

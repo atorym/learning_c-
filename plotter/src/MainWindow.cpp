@@ -6,6 +6,8 @@
 
 #include <QTimer>
 
+#include <plotter/AboutForm.hpp>
+
 #include "ui_MainWindow.h"
 
 
@@ -90,6 +92,13 @@ void MainWindow::on_pb_center_released() const {
        }) {
     axis->setRange(rng.min, rng.max);
   }
+}
+
+
+void MainWindow::on_tb_about_released() const {
+  AboutForm about;
+  about.setWindowTitle("About " + windowTitle());
+  about.exec();
 }
 
 

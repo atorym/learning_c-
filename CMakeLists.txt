@@ -7,7 +7,7 @@ string(TOUPPER ${PROJECT_NAME} ${PROJECT_NAME}_UPPER )
 set(${${PROJECT_NAME}_UPPER}_USE_PCH ON CACHE BOOL "")
 
 
-set(Qt5Libs Core Widgets)
+set(Qt5Libs Core Widgets Network)
 find_package(Qt5 COMPONENTS ${Qt5Libs} REQUIRED)
 file(REAL_PATH "${Qt5_DIR}/../../../" Qt5_ROOT_DIR) # TODO not working on linux
 

@@ -30,6 +30,7 @@ public:
 
 private slots:
   void on_pb_center_released() const;
+  void on_tb_about_released() const;
   void onSelectedFunction(std::size_t index);
   void qcp_replot();
 

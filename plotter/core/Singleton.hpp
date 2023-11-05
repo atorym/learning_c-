@@ -7,6 +7,7 @@
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <utility>
 
 #include <plotter/core/finally.hpp>
@@ -24,17 +25,31 @@ enum class SingletonLivetimeMode : std::uint8_t {
 namespace aux {
 
 
+struct SingletonMemBase {
+  template<typename Derived>
+  static void destroy(Derived** mem) {
+    if (*mem) {
+      (*mem)->~Derived();
+      (*mem) = nullptr;
+    }
+  }
+};
+
+
 template<typename Derived_, SingletonLivetimeMode>
 struct SingletonMem;
 
 
 template<typename Derived_>
-struct SingletonMem<Derived_, SingletonLivetimeMode::Global> {
-  static inline Derived_* p_;
+struct SingletonMem<Derived_, SingletonLivetimeMode::Global> : SingletonMemBase {
+  static inline Derived_*                   p_;
+  [[maybe_unused]] static inline auto const destroy_auto_ = finally(std::bind_front(SingletonMemBase::destroy<Derived_>, &p_));
+
 
   // https://en.cppreference.com/w/cpp/memory/destroy_at
   // https://habr.com/ru/post/540954/
   static std::byte* memory() {
+    (void)destroy_auto_;
     alignas(Derived_) static std::byte mem_[sizeof(Derived_)];
     return mem_;
   }
@@ -42,11 +57,13 @@ struct SingletonMem<Derived_, SingletonLivetimeMode::Global> {
 
 
 template<typename Derived_>
-struct SingletonMem<Derived_, SingletonLivetimeMode::ThreadLocal> {
-  static thread_local inline Derived_* p_;
+struct SingletonMem<Derived_, SingletonLivetimeMode::ThreadLocal> : SingletonMemBase {
+  static thread_local inline Derived_*                   p_;
+  [[maybe_unused]] static thread_local inline auto const destroy_auto_ = finally(std::bind_front(SingletonMemBase::destroy<Derived_>, &p_));
 
 
   static std::byte* memory() {
+    (void)destroy_auto_;
     alignas(Derived_) static thread_local std::byte mem_[sizeof(Derived_)];
     return mem_;
   }
@@ -65,29 +82,19 @@ private:
 public:
   static Derived* init(auto&&... args) {
     assert(!Mem::p_ && "singleton has been initialized");
-    Mem::p_ = new (Mem::memory()) Derived{std::forward<decltype(args)>(args)...};
-    return instance();
+    return Mem::p_ = new (Mem::memory()) Derived{std::forward<decltype(args)>(args)...};
   }
 
 
   [[nodiscard]] static Derived* instance() {
-    assert(Mem::p_ && "singleton not initialized");
-    return Mem::p_;
-  }
-
-
-  static void destroy() {
-    if (Mem::p_) {
-      Mem::p_->~Derived();
-      Mem::p_ = nullptr;
+    if (!Mem::p_) {
+      init();
     }
+    return Mem::p_;
   }
 
 protected:
   Singleton() noexcept = default;
-
-private:
-  [[maybe_unused]] static inline auto const destroy_auto_ = finally([] { destroy(); });
 };
 
 

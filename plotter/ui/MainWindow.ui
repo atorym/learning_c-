@@ -15,9 +15,6 @@
     <pointsize>14</pointsize>
    </font>
   </property>
-  <property name="windowTitle">
-   <string>MainWindow</string>
-  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
@@ -84,11 +81,22 @@
       </layout>
      </item>
      <item>
-      <widget class="QPushButton" name="pb_center">
-       <property name="text">
-        <string>Центрировать</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QToolButton" name="tb_about">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pb_center">
+         <property name="text">
+          <string>Центрировать</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>

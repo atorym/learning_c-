@@ -11,11 +11,11 @@ namespace lc {
 
 
 // https://stackoverflow.com/a/22618496/13161739
-class LabelAspectRatioPixmap final : public QLabel {
+class AspectRatioPixmap final : public QLabel {
   Q_OBJECT
 public:
-  ~LabelAspectRatioPixmap() override;
-  LabelAspectRatioPixmap(QWidget* parent = {}, Qt::WindowFlags f = {});
+  ~AspectRatioPixmap() override;
+  AspectRatioPixmap(QWidget* parent = {}, Qt::WindowFlags f = {});
 
   int     heightForWidth(int width) const override;
   QSize   sizeHint() const override;

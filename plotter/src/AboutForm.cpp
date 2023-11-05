@@ -42,7 +42,7 @@ private:
     }
 
     auto const reply = NetworkAccess::manager()->get(QNetworkRequest{url});
-    QObject::connect(reply, &QNetworkReply::finished, context, [this, slot = std::tuple{std::forward<decltype(slot)>(slot)}, url, reply]() mutable {
+    QObject::connect(reply, &QNetworkReply::finished, context, [this, slot = std::tuple{std::forward<decltype(slot)>(slot)}, url, reply] {
       assert(reply->error() == QNetworkReply::NoError);
 
       QPixmap pixmap;
@@ -80,8 +80,8 @@ AboutForm::AboutForm(QWidget* parent)
   ui->setupUi(this);
 
   for (auto const [label, url] : {
-         std::pair{ui->l_conelove, "https://avatars.githubusercontent.com/u/73636252?v=4"},
-         std::pair{ui->l_atorym, "https://avatars.githubusercontent.com/u/73040280?v=4"},
+         std::pair{ui->l_conelove, "https://avatars.githubusercontent.com/u/73636252"},
+         std::pair{ui->l_atorym, "https://avatars.githubusercontent.com/u/73040280"},
        }) {
     _::Pixmaps::bind({url}, this, [l = label](auto&& pixmap) {
       l->setPixmap(std::forward<decltype(pixmap)>(pixmap));

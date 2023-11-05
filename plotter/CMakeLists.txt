@@ -8,7 +8,7 @@ add_executable(${target}
   src/main.cpp
   src/metatypes.cpp
   MainWindow.hpp src/MainWindow.cpp
-  AspectRatioPixmap.hpp src/AspectRatioPixmap.cpp
+  ImageWidget.hpp src/ImageWidget.cpp
   ListFunc.hpp src/ListFunc.cpp
   FuncFactory.hpp src/FuncFactory.cpp
   AboutForm.hpp src/AboutForm.cpp

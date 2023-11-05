@@ -84,6 +84,9 @@
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
         <widget class="QToolButton" name="tb_about">
+         <property name="toolTip">
+          <string>About</string>
+         </property>
          <property name="text">
           <string>...</string>
          </property>

@@ -31,7 +31,7 @@ ListFunc::ListFunc(QWidget* parent)
     la->setContentsMargins(9, 3, 9, 3);
 
     auto const btn = new QRadioButton{root};
-    btn->setText(QLatin1String{func.name.data(), static_cast<int>(func.name.size())});
+    btn->setText(QString::fromWCharArray(func.name.data(), static_cast<int>(func.name.size())));
     QObject::connect(btn, &QAbstractButton::toggled, this, [this, index = i](bool checked) {
       if (checked) {
         emit selectedFunction(index, {});

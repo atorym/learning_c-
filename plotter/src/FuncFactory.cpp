@@ -11,34 +11,40 @@ namespace lc {
 std::span<FuncFactory::Func const> FuncFactory::get() {
   static constexpr std::array out{
     Func{
-      .name = "sin",
+      .name = L"sin",
       .previewArea{
         .xAxis{-5, 5},
-        .yAxis{-5, 5},
       },
       .ptr = [](double x) -> double {
         return std::sin(x);
       },
     },
     Func{
-      .name = "cos",
+      .name = L"cos",
       .previewArea{
         .xAxis{-5, 5},
-        .yAxis{-5, 5},
       },
       .ptr = [](double x) -> double {
         return std::cos(x);
       },
     },
     Func{
-      .name = "Parabolic",
+      .name = L"парабола",
       .previewArea{
         .xAxis{-5, 5},
-        .yAxis{-5, 5},
+        .yAxis = Func::PreviewRange{0, 5 * 2},
       },
       .ptr = [](double x) -> double {
-        int a = x;
-        return a*a;
+        return x * x;
+      },
+    },
+    Func{
+      .name = L"arcsin",
+      .previewArea{
+        .xAxis{-2, 2},
+      },
+      .ptr = [](double x) -> double {
+        return std::asin(x);
       },
     },
   };

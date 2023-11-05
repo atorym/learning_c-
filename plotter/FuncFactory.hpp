@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <optional>
 #include <span>
 #include <string_view>
 
@@ -14,15 +15,15 @@ namespace lc {
 class FuncFactory final {
 public:
   struct Func final {
-    std::string_view name;
+    std::wstring_view name;
 
     struct PreviewRange final {
       double min;
       double max;
     };
     struct PreviewArea final {
-      PreviewRange xAxis;
-      PreviewRange yAxis;
+      PreviewRange                xAxis;
+      std::optional<PreviewRange> yAxis;
     } previewArea;
 
     using Ptr = double (*)(double);

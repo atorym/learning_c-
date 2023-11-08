@@ -4,7 +4,10 @@
 
 #pragma once
 
+#include <cstdint>
+
 #include <QScrollArea>
+#include <QVector>
 
 
 class QVBoxLayout;
@@ -19,11 +22,13 @@ public:
   ~ListFunc() override;
   ListFunc(QWidget* parent = nullptr);
 
-signals:
-  void selectedFunction(std::size_t, QPrivateSignal) const;
+  void updateElapsed(std::size_t index, std::size_t us);
 
-public slots:
-  void updateElapsed(std::size_t index);
+signals:
+  void selectedFunction(QVector<std::size_t>, QPrivateSignal) const;
+
+private slots:
+  void onFuncToggled() const;
 
 private:
   QWidget* const     root_;

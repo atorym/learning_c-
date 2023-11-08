@@ -4,8 +4,11 @@
 
 #pragma once
 
+#include <cstdint>
+
 #include <QMainWindow>
 #include <QScopedPointer>
+#include <QVector>
 
 #include <plotter/FuncFactory.hpp>
 
@@ -31,14 +34,15 @@ public:
 private slots:
   void on_pb_center_released() const;
   void on_tb_about_released() const;
-  void onSelectedFunction(std::size_t index);
+  void onSelectedFunction(QVector<std::size_t> index);
   void qcp_replot();
 
 private:
-  QTimer* const rescale_delay_;
+  std::vector<QMetaObject::Connection> rescale_delay_axis_conn_;
+  QTimer* const                        rescale_delay_;
   QScopedPointer<Ui::MainWindow> const ui;
-  QCPGraph* const graph_;
-  FuncFactory::Func const* func_current_ = nullptr;
+  QCPGraph* const                      graph_;
+  QVector<std::size_t>                 func_current_index_;
 };
 
 

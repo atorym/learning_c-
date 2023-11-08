@@ -49,12 +49,28 @@ MainWindow::MainWindow(QWidget* parent)
 }
 
 
-void MainWindow::onSelectedFunction(std::size_t index) {
-  if (!std::exchange(func_current_, &FuncFactory::get()[index])) {
+void MainWindow::onSelectedFunction(QVector<std::size_t> in) {
+  qDebug() << __FUNCTION__ << in;
+
+  auto const func_prev = std::exchange(func_current_index_, in);
+  if (func_prev == in) {
+    return;
+  }
+
+  if (func_current_index_.empty()) {
+    rescale_delay_->stop();
+    while (!rescale_delay_axis_conn_.empty()) {
+      QObject::disconnect(rescale_delay_axis_conn_.back());
+      rescale_delay_axis_conn_.pop_back();
+    }
+  }
+
+  if (func_prev.empty()) {
     on_pb_center_released();
 
     for (auto const axis : {ui->qcp_plot->xAxis, ui->qcp_plot->yAxis}) {
-      QObject::connect(axis, qOverload<const QCPRange&>(&QCPAxis::rangeChanged), rescale_delay_, qOverload<>(&QTimer::start));
+      rescale_delay_axis_conn_.push_back(
+        QObject::connect(axis, qOverload<const QCPRange&>(&QCPAxis::rangeChanged), rescale_delay_, qOverload<>(&QTimer::start)));
     }
   }
 
@@ -63,33 +79,31 @@ void MainWindow::onSelectedFunction(std::size_t index) {
 
 
 void MainWindow::qcp_replot() {
-  if (!func_current_) {
-    return;
-  }
-
   graph_->data()->clear();
   auto const plot_width = ui->qcp_plot->width();
 
-  auto const start = std::chrono::high_resolution_clock::now();
-  namespace rv     = ranges::views;
-  for (auto const x : rv::iota(0, plot_width) | rv::transform([plot_width, rng = ui->qcp_plot->xAxis->range()](auto x) {
-         return _::map(x, 0, plot_width, rng.lower, rng.upper);
+  namespace rv = ranges::views;
+  for (auto const [func, index] : func_current_index_ | rv::transform([](auto index) {
+         return std::pair{FuncFactory::get()[index].ptr, index};
        })) {
-    graph_->addData(x, func_current_->ptr(x));
+    auto const start = std::chrono::high_resolution_clock::now();
+    for (auto const x : rv::iota(0, plot_width) | rv::transform([plot_width, rng = ui->qcp_plot->xAxis->range()](auto x) {
+           return _::map(x, 0, plot_width, rng.lower, rng.upper);
+         })) {
+      graph_->addData(x, func(x));
+    }
+    ui->lw_func->updateElapsed(index, std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count());
   }
-  ui->l_elapsed->setText(QString::number(
-                           std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count())
-    + "μs");
 
   ui->qcp_plot->replot();
 }
 
 
 void MainWindow::on_pb_center_released() const {
-  if (func_current_) {
+  if (!func_current_index_.empty()) {
     for (auto const [axis, rng] : {
-           std::pair{ui->qcp_plot->xAxis, func_current_->previewArea.xAxis},
-           std::pair{ui->qcp_plot->yAxis, func_current_->previewArea.yAxis.value_or(func_current_->previewArea.xAxis)},
+           std::pair{ui->qcp_plot->xAxis, FuncFactory::get()[func_current_index_.front()].previewArea.xAxis},
+           std::pair{ui->qcp_plot->yAxis, FuncFactory::get()[func_current_index_.front()].previewArea.yAxis.value_or(FuncFactory::get()[func_current_index_.front()].previewArea.xAxis)},
          }) {
       axis->setRange(rng.min, rng.max);
     }

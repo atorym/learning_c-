@@ -4,11 +4,11 @@
 
 #include <plotter/ListFunc.hpp>
 
+#include <QApplication>
 #include <QBoxLayout>
 #include <QFrame>
 #include <QLabel>
 #include <QPainter>
-#include <QApplication>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QToolButton>
@@ -49,7 +49,8 @@ class Element final : public QWidget {
   Q_OBJECT
 public:
   Element(QWidget* parent, QString const& name)
-      : QWidget{parent} {
+      : QWidget{parent}
+      , btn_{new QRadioButton{this}} {
     auto const la_root = new QVBoxLayout{this};
     la_root->setMargin(0);
     la_root->setSpacing(0);
@@ -58,16 +59,9 @@ public:
       auto const la = new QHBoxLayout;
       la_root->addLayout(la);
 
-      auto const btn = new QRadioButton{this};
-      btn->setText(name);
-      QObject::connect(btn, &QAbstractButton::toggled, this, [this](bool checked) {
-        //      auto const btn = qobject_cast<QAbstractButton*>(sender());
-        //      qDebug() << btn->text() << checked;
-        if (checked) {
-          emit funcEnabled({});
-        }
-      });
-      la->addWidget(btn);
+      btn_->setText(name);
+      QObject::connect(btn_, &QAbstractButton::toggled, this, std::bind_front(&Element::funcToggled, this, QPrivateSignal{}));
+      la->addWidget(btn_);
 
       la->addStretch();
 
@@ -95,8 +89,15 @@ public:
     }
   }
 
+  bool isActive() const {
+    return btn_->isChecked();
+  }
+
 signals:
-  void funcEnabled(QPrivateSignal) const;
+  void funcToggled(QPrivateSignal) const;
+
+private:
+  QRadioButton* const btn_;
 };
 
 
@@ -117,14 +118,12 @@ ListFunc::ListFunc(QWidget* parent)
   setWidgetResizable(true);
   setWidget(root_);
 
-  for (auto const& [i, func] : FuncFactory::get() | ranges::views::enumerate) {
+  for (auto const& func : FuncFactory::get()) {
     auto const la = new QHBoxLayout;
     la_->addLayout(la);
 
     auto const elem = new _::Element{root_, QString::fromWCharArray(func.name.data(), static_cast<int>(func.name.size()))};
-    QObject::connect(elem, &_::Element::funcEnabled, this, [this, index = i] {
-      emit selectedFunction(index, {});
-    });
+    QObject::connect(elem, &_::Element::funcToggled, this, &ListFunc::onFuncToggled);
     la->addWidget(elem);
   }
 
@@ -132,7 +131,24 @@ ListFunc::ListFunc(QWidget* parent)
 }
 
 
-void ListFunc::updateElapsed(std::size_t index) {
+void ListFunc::updateElapsed(std::size_t index, std::size_t us) {
+}
+
+
+void ListFunc::onFuncToggled() const {
+  namespace rv    = ranges::views;
+  auto const list = findChildren<_::Element const*>();
+
+  emit selectedFunction(list
+      | rv::enumerate
+      | rv::filter([](auto const pair) {
+          return pair.second->isActive();
+        })
+      | rv::transform([](auto const pair) {
+          return pair.first;
+        })
+      | ranges::to<QVector<std::size_t>>,
+    {});
 }
 
 

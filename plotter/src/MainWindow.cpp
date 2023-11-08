@@ -31,8 +31,9 @@ MainWindow::~MainWindow() = default;
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow{parent}
     , rescale_delay_{new QTimer{this}}
-    , ui{new Ui::MainWindow}
-    , graph_{(ui->setupUi(this), ui->qcp_plot->addGraph())} {
+    , ui{new Ui::MainWindow} {
+
+  ui->setupUi(this);
 
   resizeDocks({ui->dock}, {1}, Qt::Horizontal);
 
@@ -77,28 +78,28 @@ void MainWindow::onSelectedFunction(QVector<lc::FuncFactory::FuncPtr> in) {
 
 
 void MainWindow::qcp_replot() {
-  graph_->data()->clear();
+  ui->qcp_plot->clearGraphs();
   auto const plot_width = ui->qcp_plot->width();
 
-  {
+  for (auto const func : func_current_) {
+    auto const graph = ui->qcp_plot->addGraph();
+
     std::vector<std::pair<double, double>> data_cache;
     data_cache.reserve(plot_width);
 
-    for (auto const func : func_current_) {
-      auto const start = std::chrono::high_resolution_clock::now();
+    auto const start = std::chrono::high_resolution_clock::now();
 
-      namespace rv = ranges::views;
-      for (auto const x : rv::iota(0, plot_width) | rv::transform([plot_width, rng = ui->qcp_plot->xAxis->range()](auto x) {
-             return _::map(x, 0, plot_width, rng.lower, rng.upper);
-           })) {
-        data_cache.emplace_back(x, func->ptr(x));
-      }
-
-      ui->lw_func->updateElapsed(func, std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count());
+    namespace rv = ranges::views;
+    for (auto const x : rv::iota(0, plot_width) | rv::transform([plot_width, rng = ui->qcp_plot->xAxis->range()](auto x) {
+           return _::map(x, 0, plot_width, rng.lower, rng.upper);
+         })) {
+      data_cache.emplace_back(x, func->ptr(x));
     }
 
+    ui->lw_func->updateElapsed(func, std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count());
+
     for (auto const [x, y] : std::move(data_cache)) {
-      graph_->addData(x, y);
+      graph->addData(x, y);
     }
   }
 

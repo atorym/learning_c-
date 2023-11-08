@@ -38,11 +38,10 @@ private slots:
   void qcp_replot();
 
 private:
+  QVector<lc::FuncFactory::FuncPtr>    func_current_;
   std::vector<QMetaObject::Connection> rescale_delay_axis_conn_;
   QTimer* const                        rescale_delay_;
   QScopedPointer<Ui::MainWindow> const ui;
-  QCPGraph* const                      graph_;
-  QVector<lc::FuncFactory::FuncPtr>    func_current_;
 };
 
 

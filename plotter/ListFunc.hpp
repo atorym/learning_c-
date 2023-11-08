@@ -4,16 +4,16 @@
 
 #pragma once
 
-#include <QListWidget>
+#include <QScrollArea>
 
 
-class QButtonGroup;
+class QVBoxLayout;
 
 
 namespace lc {
 
 
-class ListFunc final : public QListWidget {
+class ListFunc final : public QScrollArea {
   Q_OBJECT
 public:
   ~ListFunc() override;
@@ -22,8 +22,12 @@ public:
 signals:
   void selectedFunction(std::size_t, QPrivateSignal) const;
 
+public slots:
+  void updateElapsed(std::size_t index);
+
 private:
-  QButtonGroup* const rb_group_;
+  QWidget* const     root_;
+  QVBoxLayout* const la_;
 };
 
 

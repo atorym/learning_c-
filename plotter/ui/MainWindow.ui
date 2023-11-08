@@ -35,7 +35,11 @@
    <widget class="QWidget" name="root">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="lc::ListFunc" name="lw_func"/>
+      <widget class="lc::ListFunc" name="lw_func">
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+      </widget>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,1">
@@ -114,8 +118,9 @@
   </customwidget>
   <customwidget>
    <class>lc::ListFunc</class>
-   <extends>QListWidget</extends>
+   <extends>QScrollArea</extends>
    <header location="global">plotter/ListFunc.hpp</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

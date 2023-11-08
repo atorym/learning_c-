@@ -12,6 +12,7 @@ add_executable(${target}
   ListFunc.hpp src/ListFunc.cpp
   FuncFactory.hpp src/FuncFactory.cpp
   AboutForm.hpp src/AboutForm.cpp
+  colorAppointer.hpp src/colorAppointer.cpp
   )
 
 target_link_libraries(${target} PRIVATE

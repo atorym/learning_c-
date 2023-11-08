@@ -64,12 +64,12 @@ void MainWindow::qcp_replot() {
   }
 
   graph_->data()->clear();
-  auto const plot_width = ui->qcp_plot->width();
+  auto const x_resolution = ui->qcp_plot->width()*10;
 
   auto const start = std::chrono::high_resolution_clock::now();
   namespace rv = ranges::views;
-  for (auto const x : rv::iota(0, plot_width) | rv::transform([plot_width, rng = ui->qcp_plot->xAxis->range()](auto x) {
-         return _::map(x, 0, plot_width, rng.lower, rng.upper);
+  for (auto const x : rv::iota(0, x_resolution) | rv::transform([x_resolution, rng = ui->qcp_plot->xAxis->range()](auto x) {
+         return _::map(x, 0, x_resolution, rng.lower, rng.upper);
        })) {
     graph_->addData(x, func_current_->ptr(x));
   }

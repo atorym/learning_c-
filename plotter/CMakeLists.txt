@@ -9,10 +9,11 @@ add_executable(${target}
   src/metatypes.cpp
   MainWindow.hpp src/MainWindow.cpp
   ImageWidget.hpp src/ImageWidget.cpp
-  ListFunc.hpp src/ListFunc.cpp
+  FuncSelector.hpp src/FuncSelector.cpp
   FuncFactory.hpp src/FuncFactory.cpp
   AboutForm.hpp src/AboutForm.cpp
   colorAppointer.hpp src/colorAppointer.cpp
+  FuncModel.hpp src/FuncModel.cpp
   )
 
 target_link_libraries(${target} PRIVATE

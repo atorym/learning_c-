@@ -2,7 +2,7 @@
 // Created by dym on 04.11.23.
 //
 
-#include <plotter/ListFunc.hpp>
+#include <plotter/FuncSelector.hpp>
 
 #include <QApplication>
 #include <QBoxLayout>
@@ -14,7 +14,7 @@
 #include <QToolButton>
 #include <QWidget>
 
-#include <plotter/colorAppointer.hpp>
+#include <plotter/FuncModel.hpp>
 
 
 namespace lc {
@@ -24,11 +24,15 @@ namespace _ {
 
 class ColorViewport final : public QToolButton {
   Q_OBJECT
-
 public:
-  ColorViewport(QString name, QWidget* parent = {})
+  ColorViewport(FuncFactory::FuncPtr fn, QWidget* parent = {})
       : QToolButton{parent}
-      , name_{std::move(name)} {
+      , fn_{std::move(fn)}
+      , color_{FuncModel::instance()->get(fn_, FuncModel::Role::color).value<QColor>()} {
+
+    QObject::connect(this, &ColorViewport::colorChanged, FuncModel::instance(), [this](QColor color) {
+      FuncModel::instance()->set(fn_, FuncModel::Role::color, std::move(color));
+    });
 
     QObject::connect(this, &QAbstractButton::released, this, &ColorViewport::open_dialog);
   }
@@ -54,7 +58,7 @@ protected:
 
 private slots:
   void open_dialog() {
-    if (auto cnew = QColorDialog::getColor(color_, this, "Color for plot '" + name_ + "'"); color_ != cnew) {
+    if (auto cnew = QColorDialog::getColor(color_, this, "Color for plot '" + QString::fromWCharArray(fn_->name.data(), fn_->name.size()) + "'"); color_ != cnew) {
       color_ = std::move(cnew);
       repaint();
       emit colorChanged(color_, {});
@@ -62,8 +66,8 @@ private slots:
   }
 
 private:
-  QString name_;
-  QColor  color_ = QString::fromStdString(colorAppointer());
+  FuncFactory::FuncPtr const fn_;
+  QColor                     color_;
 };
 
 
@@ -71,7 +75,6 @@ class Element final : public QWidget {
   Q_OBJECT
 public:
   FuncFactory::FuncPtr const fn;
-  ColorViewport* const       colorViewport = new ColorViewport{QString::fromWCharArray(fn->name.data(), fn->name.size()), this};
 
 public:
   Element(QWidget* parent, FuncFactory::FuncPtr fnIn)
@@ -96,7 +99,7 @@ public:
 
       la->addStretch();
 
-      la->addWidget(colorViewport);
+      la->addWidget(colorViewport_);
     }
 
     {
@@ -137,9 +140,10 @@ private:
   auto static constexpr elapsed_label_default_text_ = " - ";
 
 private:
-  QRadioButton* const btn_           = new QRadioButton{this};
-  QFrame* const       elapsed_frame_ = new QFrame{this};
-  QLabel* const       elapsed_label_ = new QLabel{elapsed_label_default_text_, elapsed_frame_};
+  QRadioButton* const  btn_           = new QRadioButton{this};
+  ColorViewport* const colorViewport_ = new ColorViewport{fn, this};
+  QFrame* const        elapsed_frame_ = new QFrame{this};
+  QLabel* const        elapsed_label_ = new QLabel{elapsed_label_default_text_, elapsed_frame_};
 };
 
 
@@ -147,10 +151,10 @@ private:
 }// namespace
 
 
-ListFunc::~ListFunc() = default;
+FuncSelector::~FuncSelector() = default;
 
 
-ListFunc::ListFunc(QWidget* parent)
+FuncSelector::FuncSelector(QWidget* parent)
     : QScrollArea{parent}
     , root_{new QWidget{this}}
     , la_{new QVBoxLayout{root_}} {
@@ -165,10 +169,7 @@ ListFunc::ListFunc(QWidget* parent)
     la_->addLayout(la);
 
     auto const elem = new _::Element{root_, func};
-    QObject::connect(elem, &_::Element::funcToggled, this, &ListFunc::onFuncToggled);
-    QObject::connect(elem->colorViewport, &_::ColorViewport::colorChanged, this, [this, func](QColor color) {
-      emit colorChanged(func, color, {});
-    });
+    QObject::connect(elem, &_::Element::funcToggled, this, &FuncSelector::onFuncToggled);
     la->addWidget(elem);
   }
 
@@ -176,13 +177,13 @@ ListFunc::ListFunc(QWidget* parent)
 }
 
 
-void ListFunc::updateElapsed(FuncFactory::FuncPtr fn, std::size_t us) {
+void FuncSelector::updateElapsed(FuncFactory::FuncPtr fn, std::size_t us) {
   auto const list = findChildren<_::Element const*>();
   (*ranges::find(list, fn, std::bind_front(&_::Element::fn)))->setElapsed(QString::number(us) + "μs");
 }
 
 
-void ListFunc::onFuncToggled() const {
+void FuncSelector::onFuncToggled() const {
   namespace rv    = ranges::views;
   auto const list = findChildren<_::Element const*>();
 
@@ -190,13 +191,8 @@ void ListFunc::onFuncToggled() const {
       | rv::filter([](auto const e) {
           return e->isActive();
         })
-      | rv::transform([](auto const e) -> FuncColorPair {
-          return {
-            .func  = e->fn,
-            .color = e->colorViewport->color(),
-          };
-        })
-      | ranges::to<QVector<FuncColorPair>>,
+      | rv::transform(std::bind_front(&_::Element::fn))
+      | ranges::to<QVector<FuncFactory::FuncPtr>>,
     {});
 }
 
@@ -204,4 +200,4 @@ void ListFunc::onFuncToggled() const {
 }// namespace lc
 
 
-#include "ListFunc.moc"
+#include "FuncSelector.moc"

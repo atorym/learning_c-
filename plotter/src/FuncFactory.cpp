@@ -8,9 +8,9 @@
 namespace lc {
 
 
-std::span<FuncFactory::Func const> FuncFactory::get() {
-  static constexpr std::array out{
-    Func{
+std::span<FuncFactory::FuncPtr const> FuncFactory::get() {
+  static std::array out{
+    FuncPtr{new Func{
       .name = L"sin",
       .previewArea{
         .xAxis{-5, 5},
@@ -18,8 +18,9 @@ std::span<FuncFactory::Func const> FuncFactory::get() {
       .ptr = [](double x) -> double {
         return std::sin(x);
       },
-    },
-    Func{
+    }},
+
+    FuncPtr{new Func{
       .name = L"cos",
       .previewArea{
         .xAxis{-5, 5},
@@ -27,8 +28,9 @@ std::span<FuncFactory::Func const> FuncFactory::get() {
       .ptr = [](double x) -> double {
         return std::cos(x);
       },
-    },
-    Func{
+    }},
+
+    FuncPtr{new Func{
       .name = L"парабола",
       .previewArea{
         .xAxis{-5, 5},
@@ -37,8 +39,9 @@ std::span<FuncFactory::Func const> FuncFactory::get() {
       .ptr = [](double x) -> double {
         return x * x;
       },
-    },
-    Func{
+    }},
+
+    FuncPtr{new Func{
       .name = L"arcsin",
       .previewArea{
         .xAxis{-2, 2},
@@ -46,7 +49,8 @@ std::span<FuncFactory::Func const> FuncFactory::get() {
       .ptr = [](double x) -> double {
         return std::asin(x);
       },
-    },
+    }},
+
   };
   return out;
 }

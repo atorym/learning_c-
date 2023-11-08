@@ -10,6 +10,8 @@
 #include <QScopedPointer>
 #include <QVector>
 
+#include <plotter/FuncFactory.hpp>
+
 
 class QCPGraph;
 class QTimer;
@@ -32,7 +34,7 @@ public:
 private slots:
   void on_pb_center_released() const;
   void on_tb_about_released() const;
-  void onSelectedFunction(QVector<std::size_t> index);
+  void onSelectedFunction(QVector<lc::FuncFactory::FuncPtr> index);
   void qcp_replot();
 
 private:
@@ -40,7 +42,7 @@ private:
   QTimer* const                        rescale_delay_;
   QScopedPointer<Ui::MainWindow> const ui;
   QCPGraph* const                      graph_;
-  QVector<std::size_t>                 func_current_index_;
+  QVector<lc::FuncFactory::FuncPtr>    func_current_;
 };
 
 

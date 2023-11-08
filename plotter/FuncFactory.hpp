@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <memory>
 #include <optional>
 #include <span>
 #include <string_view>
@@ -30,10 +31,12 @@ public:
     Ptr ptr;
   };
 
+  using FuncPtr = std::shared_ptr<Func const>;
+
 public:
   FuncFactory() = delete;
 
-  static std::span<Func const> get();
+  static std::span<FuncPtr const> get();
 };
 
 

@@ -9,12 +9,10 @@
 #include <QFrame>
 #include <QLabel>
 #include <QPainter>
-#include <QPushButton>
 #include <QRadioButton>
 #include <QToolButton>
 #include <QWidget>
 
-#include <plotter/FuncFactory.hpp>
 #include <plotter/colorAppointer.hpp>
 
 
@@ -48,8 +46,12 @@ private:
 class Element final : public QWidget {
   Q_OBJECT
 public:
-  Element(QWidget* parent, QString const& name)
+  FuncFactory::FuncPtr const fn;
+
+public:
+  Element(QWidget* parent, FuncFactory::FuncPtr fnIn)
       : QWidget{parent}
+      , fn{std::move(fnIn)}
       , btn_{new QRadioButton{this}} {
     auto const la_root = new QVBoxLayout{this};
     la_root->setMargin(0);
@@ -59,7 +61,7 @@ public:
       auto const la = new QHBoxLayout;
       la_root->addLayout(la);
 
-      btn_->setText(name);
+      btn_->setText(QString::fromWCharArray(fn->name.data(), static_cast<int>(fn->name.size())));
       QObject::connect(btn_, &QAbstractButton::toggled, this, std::bind_front(&Element::funcToggled, this, QPrivateSignal{}));
       la->addWidget(btn_);
 
@@ -122,7 +124,7 @@ ListFunc::ListFunc(QWidget* parent)
     auto const la = new QHBoxLayout;
     la_->addLayout(la);
 
-    auto const elem = new _::Element{root_, QString::fromWCharArray(func.name.data(), static_cast<int>(func.name.size()))};
+    auto const elem = new _::Element{root_, func};
     QObject::connect(elem, &_::Element::funcToggled, this, &ListFunc::onFuncToggled);
     la->addWidget(elem);
   }
@@ -131,7 +133,7 @@ ListFunc::ListFunc(QWidget* parent)
 }
 
 
-void ListFunc::updateElapsed(std::size_t index, std::size_t us) {
+void ListFunc::updateElapsed(lc::FuncFactory::FuncPtr fn, std::size_t us) {
 }
 
 
@@ -140,14 +142,13 @@ void ListFunc::onFuncToggled() const {
   auto const list = findChildren<_::Element const*>();
 
   emit selectedFunction(list
-      | rv::enumerate
-      | rv::filter([](auto const pair) {
-          return pair.second->isActive();
+      | rv::filter([](auto const e) {
+          return e->isActive();
         })
-      | rv::transform([](auto const pair) {
-          return pair.first;
+      | rv::transform([](auto const e) {
+          return e->fn;
         })
-      | ranges::to<QVector<std::size_t>>,
+      | ranges::to<QVector<lc::FuncFactory::FuncPtr>>,
     {});
 }
 

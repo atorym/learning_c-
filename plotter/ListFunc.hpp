@@ -9,6 +9,8 @@
 #include <QScrollArea>
 #include <QVector>
 
+#include <plotter/FuncFactory.hpp>
+
 
 class QVBoxLayout;
 
@@ -22,10 +24,10 @@ public:
   ~ListFunc() override;
   ListFunc(QWidget* parent = nullptr);
 
-  void updateElapsed(std::size_t index, std::size_t us);
+  void updateElapsed(lc::FuncFactory::FuncPtr fn, std::size_t us);
 
 signals:
-  void selectedFunction(QVector<std::size_t>, QPrivateSignal) const;
+  void selectedFunction(QVector<lc::FuncFactory::FuncPtr>, QPrivateSignal) const;
 
 private slots:
   void onFuncToggled() const;

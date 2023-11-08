@@ -4,8 +4,12 @@
 
 #pragma once
 
+#include <memory>
+#include <optional>
 #include <span>
 #include <string_view>
+
+#include <QMetaType>
 
 
 namespace lc {
@@ -14,26 +18,30 @@ namespace lc {
 class FuncFactory final {
 public:
   struct Func final {
-    std::string_view name;
+    std::wstring_view name;
 
     struct PreviewRange final {
       double min;
       double max;
     };
     struct PreviewArea final {
-      PreviewRange xAxis;
-      PreviewRange yAxis;
+      PreviewRange                xAxis;
+      std::optional<PreviewRange> yAxis;
     } previewArea;
 
     using Ptr = double (*)(double);
     Ptr ptr;
   };
 
+  using FuncPtr = std::shared_ptr<Func const>;
+
 public:
   FuncFactory() = delete;
 
-  static std::span<Func const> get();
+  static std::span<FuncPtr const> get();
 };
 
 
 }// namespace lc
+
+Q_DECLARE_METATYPE(lc::FuncFactory::FuncPtr)

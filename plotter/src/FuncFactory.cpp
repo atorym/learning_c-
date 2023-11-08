@@ -46,79 +46,68 @@ double my_sin(double x) {
   return x;
 }
 
-std::span<FuncFactory::Func const> FuncFactory::get() {
-  static constexpr std::array out{
-    Func{
-      .name = "sin",
+std::span<FuncFactory::FuncPtr const> FuncFactory::get() {
+  static std::array out{
+    FuncPtr{new Func{
+      .name = L"sin",
       .previewArea{
         .xAxis{-5, 5},
-        .yAxis{-5, 5},
       },
       .ptr = [](double x) -> double {
         return std::sin(x);
       },
-    },
-    Func{
-      .name = "cos",
+    }},
+
+    FuncPtr{new Func{
+      .name = L"cos",
       .previewArea{
         .xAxis{-5, 5},
-        .yAxis{-5, 5},
       },
       .ptr = [](double x) -> double {
         return std::cos(x);
       },
-    },
+    }},
 
-    Func{
-      .name = "Giperbola",
+    FuncPtr{new Func{
+      .name = L"парабола",
       .previewArea{
         .xAxis{-5, 5},
-        .yAxis{-5, 5},
-      },
-      .ptr = [](double x) -> double {
-        return 1 / x;
-      },
-    },
-    Func{
-      .name = "Parabola",
-      .previewArea{
-        .xAxis{-5, 5},
-        .yAxis{-5, 5},
+        .yAxis = Func::PreviewRange{0, 5 * 2},
       },
       .ptr = [](double x) -> double {
         return x * x;
       },
-    },
-    Func{
-      .name = "Qubic Parabola",
+    }},
+
+    FuncPtr{new Func{
+      .name = L"arcsin",
       .previewArea{
-        .xAxis{-5, 5},
-        .yAxis{-5, 5},
+        .xAxis{-2, 2},
       },
       .ptr = [](double x) -> double {
-        return x * x * x;
+        return std::asin(x);
       },
-    },
-    Func{
-      .name = "Sinusoid",
+    }},
+
+    FuncPtr {new Func{
+      .name = L"Гипербола",
       .previewArea{
         .xAxis{-5, 5},
-        .yAxis{-5, 5},
+      },
+      .ptr = [](double x) -> double {
+        return 1 / x;
+      },
+    }},
+    FuncPtr {new Func{
+      .name = L"Синусоида",
+      .previewArea{
+        .xAxis{-5, 5},
       },
       .ptr = [](double x) -> double {
         return my_sin(x);
       },
-    },
-    Func{
-      .name = "Cosinusoid",
-      .previewArea{
-        .xAxis{-5, 5},
-        .yAxis{-5, 5},
-      },
-      .ptr = [](double x) -> double {
-        return 0;
-      },
-    },
+    }},
+
   };
   return out;
 }

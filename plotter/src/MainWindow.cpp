@@ -80,15 +80,26 @@ void MainWindow::qcp_replot() {
   graph_->data()->clear();
   auto const plot_width = ui->qcp_plot->width();
 
-  namespace rv = ranges::views;
-  for (auto const func : func_current_) {
-    auto const start = std::chrono::high_resolution_clock::now();
-    for (auto const x : rv::iota(0, plot_width) | rv::transform([plot_width, rng = ui->qcp_plot->xAxis->range()](auto x) {
-           return _::map(x, 0, plot_width, rng.lower, rng.upper);
-         })) {
-      graph_->addData(x, func->ptr(x));
+  {
+    std::vector<std::pair<double, double>> data_cache;
+    data_cache.reserve(plot_width);
+
+    for (auto const func : func_current_) {
+      auto const start = std::chrono::high_resolution_clock::now();
+
+      namespace rv = ranges::views;
+      for (auto const x : rv::iota(0, plot_width) | rv::transform([plot_width, rng = ui->qcp_plot->xAxis->range()](auto x) {
+             return _::map(x, 0, plot_width, rng.lower, rng.upper);
+           })) {
+        data_cache.emplace_back(x, func->ptr(x));
+      }
+
+      ui->lw_func->updateElapsed(func, std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count());
     }
-    ui->lw_func->updateElapsed(func, std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count());
+
+    for (auto const [x, y] : std::move(data_cache)) {
+      graph_->addData(x, y);
+    }
   }
 
   ui->qcp_plot->replot();

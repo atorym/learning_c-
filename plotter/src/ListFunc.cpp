@@ -61,7 +61,12 @@ public:
       la_root->addLayout(la);
 
       btn_->setText(QString::fromWCharArray(fn->name.data(), static_cast<int>(fn->name.size())));
-      QObject::connect(btn_, &QAbstractButton::toggled, this, std::bind_front(&Element::funcToggled, this, QPrivateSignal{}));
+      QObject::connect(btn_, &QAbstractButton::toggled, this, [this](bool f) {
+        if (!f) {
+          elapsed_label_->setText(elapsed_label_default_text_);
+        }
+        emit funcToggled({});
+      });
       la->addWidget(btn_);
 
       la->addStretch();
@@ -103,9 +108,12 @@ signals:
   void funcToggled(QPrivateSignal) const;
 
 private:
+  auto static constexpr elapsed_label_default_text_ = " - ";
+
+private:
   QRadioButton* const btn_           = new QRadioButton{this};
   QFrame* const       elapsed_frame_ = new QFrame{this};
-  QLabel* const       elapsed_label_  = new QLabel{" - ", elapsed_frame_};
+  QLabel* const       elapsed_label_ = new QLabel{elapsed_label_default_text_, elapsed_frame_};
 };
 
 

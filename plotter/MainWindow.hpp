@@ -10,8 +10,6 @@
 #include <QScopedPointer>
 #include <QVector>
 
-#include <plotter/FuncFactory.hpp>
-
 
 class QCPGraph;
 class QTimer;

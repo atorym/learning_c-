@@ -7,6 +7,7 @@
 #include <QTimer>
 
 #include <plotter/AboutForm.hpp>
+#include <plotter/FuncFactory.hpp>
 
 #include "ui_MainWindow.h"
 

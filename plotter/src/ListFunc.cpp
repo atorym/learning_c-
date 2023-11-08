@@ -51,8 +51,7 @@ public:
 public:
   Element(QWidget* parent, FuncFactory::FuncPtr fnIn)
       : QWidget{parent}
-      , fn{std::move(fnIn)}
-      , btn_{new QRadioButton{this}} {
+      , fn{std::move(fnIn)} {
     auto const la_root = new QVBoxLayout{this};
     la_root->setMargin(0);
     la_root->setSpacing(0);
@@ -75,31 +74,38 @@ public:
       la_root->addLayout(la);
 
       {
-        auto const elapsed_frame = new QFrame{this};
-        elapsed_frame->setFrameShape(QFrame::StyledPanel);
-        la->addWidget(elapsed_frame);
+        elapsed_frame_->setFrameShape(QFrame::StyledPanel);
+        la->addWidget(elapsed_frame_);
 
-        auto const elapsed_la = new QVBoxLayout{elapsed_frame};
+        auto const elapsed_la = new QVBoxLayout{elapsed_frame_};
         elapsed_la->setMargin(1);
 
-        auto const elapsed = new QLabel{"test", elapsed_frame};
-        elapsed->setFont(qApp->font());
-        elapsed_la->addWidget(elapsed);
+        elapsed_label_->setFont(qApp->font());
+        elapsed_la->addWidget(elapsed_label_);
       }
 
       la->addStretch();
     }
   }
 
+
   bool isActive() const {
     return btn_->isChecked();
   }
+
+
+  void setElapsed(QString const& text) const {
+    elapsed_label_->setText(text);
+  }
+
 
 signals:
   void funcToggled(QPrivateSignal) const;
 
 private:
-  QRadioButton* const btn_;
+  QRadioButton* const btn_           = new QRadioButton{this};
+  QFrame* const       elapsed_frame_ = new QFrame{this};
+  QLabel* const       elapsed_label_  = new QLabel{" - ", elapsed_frame_};
 };
 
 
@@ -134,6 +140,8 @@ ListFunc::ListFunc(QWidget* parent)
 
 
 void ListFunc::updateElapsed(lc::FuncFactory::FuncPtr fn, std::size_t us) {
+  auto const list = findChildren<_::Element const*>();
+  (*ranges::find(list, fn, std::bind_front(&_::Element::fn)))->setElapsed(QString::number(us) + "μs");
 }
 
 

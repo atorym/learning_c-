@@ -6,6 +6,7 @@
 
 #include <QApplication>
 #include <QBoxLayout>
+#include <QColorDialog>
 #include <QFrame>
 #include <QLabel>
 #include <QPainter>
@@ -25,7 +26,20 @@ class ColorViewport final : public QToolButton {
   Q_OBJECT
 
 public:
-  using QToolButton::QToolButton;
+  ColorViewport(QString name, QWidget* parent = {})
+      : QToolButton{parent}
+      , name_{std::move(name)} {
+
+    QObject::connect(this, &QAbstractButton::released, this, &ColorViewport::open_dialog);
+  }
+
+
+  QColor const& color() const {
+    return color_;
+  }
+
+signals:
+  void colorChanged(QColor, QPrivateSignal) const;
 
 protected:
   void paintEvent(QPaintEvent* event) override {
@@ -38,8 +52,18 @@ protected:
     painter.drawRect(rect().adjusted(margin, margin, -(margin + 1), -(margin + 1)));
   }
 
+private slots:
+  void open_dialog() {
+    if (auto cnew = QColorDialog::getColor(color_, this, "Color for plot '" + name_ + "'"); color_ != cnew) {
+      color_ = std::move(cnew);
+      repaint();
+      emit colorChanged(color_, {});
+    }
+  }
+
 private:
-  QColor color_ = QString::fromStdString(colorAppointer());
+  QString name_;
+  QColor  color_ = QString::fromStdString(colorAppointer());
 };
 
 
@@ -47,6 +71,7 @@ class Element final : public QWidget {
   Q_OBJECT
 public:
   FuncFactory::FuncPtr const fn;
+  ColorViewport* const       colorViewport = new ColorViewport{QString::fromWCharArray(fn->name.data(), fn->name.size()), this};
 
 public:
   Element(QWidget* parent, FuncFactory::FuncPtr fnIn)
@@ -71,7 +96,7 @@ public:
 
       la->addStretch();
 
-      la->addWidget(new ColorViewport{this});
+      la->addWidget(colorViewport);
     }
 
     {
@@ -79,7 +104,8 @@ public:
       la_root->addLayout(la);
 
       {
-        elapsed_frame_->setFrameShape(QFrame::StyledPanel);
+        elapsed_frame_->setFrameShape(QFrame::NoFrame);
+        elapsed_frame_->setToolTip("Elapsed time");
         la->addWidget(elapsed_frame_);
 
         auto const elapsed_la = new QVBoxLayout{elapsed_frame_};
@@ -129,17 +155,20 @@ ListFunc::ListFunc(QWidget* parent)
     , root_{new QWidget{this}}
     , la_{new QVBoxLayout{root_}} {
 
-  la_->setSpacing(9);
+  la_->setSpacing(6);
 
   setWidgetResizable(true);
   setWidget(root_);
 
-  for (auto const& func : FuncFactory::get()) {
+  for (auto const func : FuncFactory::get()) {
     auto const la = new QHBoxLayout;
     la_->addLayout(la);
 
     auto const elem = new _::Element{root_, func};
     QObject::connect(elem, &_::Element::funcToggled, this, &ListFunc::onFuncToggled);
+    QObject::connect(elem->colorViewport, &_::ColorViewport::colorChanged, this, [this, func](QColor color) {
+      emit colorChanged(func, color, {});
+    });
     la->addWidget(elem);
   }
 
@@ -147,7 +176,7 @@ ListFunc::ListFunc(QWidget* parent)
 }
 
 
-void ListFunc::updateElapsed(lc::FuncFactory::FuncPtr fn, std::size_t us) {
+void ListFunc::updateElapsed(FuncFactory::FuncPtr fn, std::size_t us) {
   auto const list = findChildren<_::Element const*>();
   (*ranges::find(list, fn, std::bind_front(&_::Element::fn)))->setElapsed(QString::number(us) + "μs");
 }
@@ -161,10 +190,13 @@ void ListFunc::onFuncToggled() const {
       | rv::filter([](auto const e) {
           return e->isActive();
         })
-      | rv::transform([](auto const e) {
-          return e->fn;
+      | rv::transform([](auto const e) -> FuncColorPair {
+          return {
+            .func  = e->fn,
+            .color = e->colorViewport->color(),
+          };
         })
-      | ranges::to<QVector<lc::FuncFactory::FuncPtr>>,
+      | ranges::to<QVector<FuncColorPair>>,
     {});
 }
 

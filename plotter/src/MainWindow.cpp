@@ -47,12 +47,18 @@ MainWindow::MainWindow(QWidget* parent)
 
   QObject::connect(rescale_delay_, &QTimer::timeout, this, &MainWindow::qcp_replot);
   QObject::connect(ui->lw_func, &ListFunc::selectedFunction, this, &MainWindow::onSelectedFunction);
+  QObject::connect(ui->lw_func, &ListFunc::colorChanged, this, &MainWindow::onColorChanged);
 }
 
 
-void MainWindow::onSelectedFunction(QVector<lc::FuncFactory::FuncPtr> in) {
-  auto const func_prev = std::exchange(func_current_, in);
-  if (func_prev == in) {
+void MainWindow::onSelectedFunction(QVector<ListFunc::FuncColorPair> in) {
+  auto func_prev = std::move(func_current_);
+  namespace rv   = ranges::views;
+  func_current_  = in | rv::transform([](auto i) -> typename func_graph_map_t::value_type {
+    return {i.func, GraphColorPair{.color = i.color}};
+  }) | ranges::to<func_graph_map_t>;
+
+  if (ranges::equal(func_prev, in, std::equal_to{}, std::bind_front(&func_graph_map_t::value_type::first), std::bind_front(&ListFunc::FuncColorPair::func))) {
     return;
   }
 
@@ -81,8 +87,13 @@ void MainWindow::qcp_replot() {
   ui->qcp_plot->clearGraphs();
   auto const plot_width = ui->qcp_plot->width();
 
-  for (auto const func : func_current_) {
-    auto const graph = ui->qcp_plot->addGraph();
+  for (auto& [impl, painted] : func_current_) {
+    painted.grap = ui->qcp_plot->addGraph();
+    {
+      auto pen = painted.grap->pen();
+      pen.setColor(painted.color);
+      painted.grap->setPen(pen);
+    }
 
     std::vector<std::pair<double, double>> data_cache;
     data_cache.reserve(plot_width);
@@ -93,13 +104,13 @@ void MainWindow::qcp_replot() {
     for (auto const x : rv::iota(0, plot_width) | rv::transform([plot_width, rng = ui->qcp_plot->xAxis->range()](auto x) {
            return _::map(x, 0, plot_width, rng.lower, rng.upper);
          })) {
-      data_cache.emplace_back(x, func->ptr(x));
+      data_cache.emplace_back(x, impl->ptr(x));
     }
 
-    ui->lw_func->updateElapsed(func, std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count());
+    ui->lw_func->updateElapsed(impl, std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count());
 
     for (auto const [x, y] : std::move(data_cache)) {
-      graph->addData(x, y);
+      painted.grap->addData(x, y);
     }
   }
 
@@ -111,7 +122,9 @@ void MainWindow::on_pb_center_released() const {
   if (!func_current_.empty()) {
     QCPRange xRng;
     QCPRange yRng;
-    for (auto const area : func_current_ | ranges::views::transform(std::bind_front(&FuncFactory::Func::previewArea))) {
+    for (auto const area : func_current_ | ranges::views::transform([](auto&& i) {
+           return i.first->previewArea;
+         })) {
       for (auto const [axis, rng] : {
              std::pair{&xRng, area.xAxis},
              std::pair{&yRng, area.yAxis.value_or(area.xAxis)},
@@ -130,6 +143,14 @@ void MainWindow::on_tb_about_released() const {
   AboutForm about;
   about.setWindowTitle("About " + windowTitle());
   about.exec();
+}
+
+
+void MainWindow::onColorChanged(FuncFactory::FuncPtr func, QColor color) {
+  if (auto const it = func_current_.find(func); it != func_current_.cend()) {
+    it->second.grap->setPen(color);
+    ui->qcp_plot->replot();
+  }
 }
 
 

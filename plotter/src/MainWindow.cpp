@@ -7,6 +7,7 @@
 #include <QTimer>
 
 #include <plotter/AboutForm.hpp>
+#include <plotter/FuncModel.hpp>
 
 #include "ui_MainWindow.h"
 
@@ -46,19 +47,14 @@ MainWindow::MainWindow(QWidget* parent)
   ui->qcp_plot->setInteraction(QCP::iRangeZoom, true);
 
   QObject::connect(rescale_delay_, &QTimer::timeout, this, &MainWindow::qcp_replot);
-  QObject::connect(ui->lw_func, &ListFunc::selectedFunction, this, &MainWindow::onSelectedFunction);
-  QObject::connect(ui->lw_func, &ListFunc::colorChanged, this, &MainWindow::onColorChanged);
+  QObject::connect(ui->lw_func, &FuncSelector::selectedFunction, this, &MainWindow::onSelectedFunction);
 }
 
 
-void MainWindow::onSelectedFunction(QVector<ListFunc::FuncColorPair> in) {
-  auto func_prev = std::move(func_current_);
-  namespace rv   = ranges::views;
-  func_current_  = in | rv::transform([](auto i) -> typename func_graph_map_t::value_type {
-    return {i.func, GraphColorPair{.color = i.color}};
-  }) | ranges::to<func_graph_map_t>;
+void MainWindow::onSelectedFunction(QVector<FuncFactory::FuncPtr> in) {
+  auto func_prev = std::exchange(func_current_, std::move(in));
 
-  if (ranges::equal(func_prev, in, std::equal_to{}, std::bind_front(&func_graph_map_t::value_type::first), std::bind_front(&ListFunc::FuncColorPair::func))) {
+  if (func_prev == func_current_) {
     return;
   }
 
@@ -87,12 +83,23 @@ void MainWindow::qcp_replot() {
   ui->qcp_plot->clearGraphs();
   auto const plot_width = ui->qcp_plot->width();
 
-  for (auto& [impl, painted] : func_current_) {
-    painted.grap = ui->qcp_plot->addGraph();
+  for (auto const fn : func_current_) {
+    auto const graph = ui->qcp_plot->addGraph();
     {
-      auto pen = painted.grap->pen();
-      pen.setColor(painted.color);
-      painted.grap->setPen(pen);
+      auto pen_setter = [graph, fn](QVariant color) {
+        auto pen = graph->pen();
+        assert(color.canConvert<QColor>());
+        pen.setColor(std::move(color).value<QColor>());
+        graph->setPen(pen);
+      };
+      pen_setter(FuncModel::instance()->get(fn, FuncModel::Role::color));
+      QObject::connect(FuncModel::instance(), &FuncModel::changed, graph, [pen_setter = std::move(pen_setter), fn, plot = ui->qcp_plot](FuncFactory::FuncPtr fnIn, FuncModel::Role role, QVariant value) {
+        if (!(role == FuncModel::Role::color && fn == fnIn)) {
+          return;
+        }
+        pen_setter(std::move(value));
+        plot->replot();
+      });
     }
 
     std::vector<std::pair<double, double>> data_cache;
@@ -104,13 +111,13 @@ void MainWindow::qcp_replot() {
     for (auto const x : rv::iota(0, plot_width) | rv::transform([plot_width, rng = ui->qcp_plot->xAxis->range()](auto x) {
            return _::map(x, 0, plot_width, rng.lower, rng.upper);
          })) {
-      data_cache.emplace_back(x, impl->ptr(x));
+      data_cache.emplace_back(x, fn->ptr(x));
     }
 
-    ui->lw_func->updateElapsed(impl, std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count());
+    ui->lw_func->updateElapsed(fn, std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count());
 
     for (auto const [x, y] : std::move(data_cache)) {
-      painted.grap->addData(x, y);
+      graph->addData(x, y);
     }
   }
 
@@ -123,7 +130,7 @@ void MainWindow::on_pb_center_released() const {
     QCPRange xRng;
     QCPRange yRng;
     for (auto const area : func_current_ | ranges::views::transform([](auto&& i) {
-           return i.first->previewArea;
+           return i->previewArea;
          })) {
       for (auto const [axis, rng] : {
              std::pair{&xRng, area.xAxis},
@@ -143,14 +150,6 @@ void MainWindow::on_tb_about_released() const {
   AboutForm about;
   about.setWindowTitle("About " + windowTitle());
   about.exec();
-}
-
-
-void MainWindow::onColorChanged(FuncFactory::FuncPtr func, QColor color) {
-  if (auto const it = func_current_.find(func); it != func_current_.cend()) {
-    it->second.grap->setPen(color);
-    ui->qcp_plot->replot();
-  }
 }
 
 

@@ -9,8 +9,6 @@
 #include <span>
 #include <string_view>
 
-#include <QMetaType>
-
 
 namespace lc {
 
@@ -43,5 +41,3 @@ public:
 
 
 }// namespace lc
-
-Q_DECLARE_METATYPE(lc::FuncFactory::FuncPtr)

@@ -7,18 +7,22 @@
   6 факелов и 12 стрел. Напишите функцию countTotalItems(), которая возвращает общее количество
   предметов, которые есть у игрока. В функции main() выведите результат работы функции countTotalItems().
 */
+#include <cstdint>
 #include <cstdlib>
 #include <iostream>
-#include <cstdint>
 
 
-namespace Inventory{
-enum Inventory{
+namespace Inventory {
+
+
+enum Inventory {
   POTIONS,
   TORCH,
   ARROWS,
   BAG,
 };
+
+
 }
 
 
@@ -26,15 +30,17 @@ std::size_t count_total_items(std::size_t count[]);
 
 
 int main() {
-std::size_t count[Inventory::BAG];
-count[Inventory::POTIONS] = 3;
-count[Inventory::TORCH] = 6;
-count[Inventory::ARROWS] = 12;
-std::cout << "You have " << count_total_items(count) << " items";
+  std::size_t count[Inventory::BAG];
+
+  count[Inventory::POTIONS] = 3;
+  count[Inventory::TORCH] = 6;
+  count[Inventory::ARROWS] = 12;
+
+  std::cout << "You have " << count_total_items(count) << " items";
   return EXIT_SUCCESS;
 }
 
 
-std::size_t count_total_items(std::size_t count[]){
+std::size_t count_total_items(std::size_t count[]) {
   return count[Inventory::POTIONS] + count[Inventory::TORCH] + count[Inventory::ARROWS];
 }

@@ -7,9 +7,10 @@ function(asm_task name)
   target_pch(${sol})
 
   set(test at_${name})
-  add_executable(${test} service/helper.hpp)
+  add_executable(${test})
   target_link_libraries(${test}
     ${sol}
+    service_shared
     gtest_main
     gmock
     )
@@ -56,3 +57,5 @@ endfunction()
 
 asm_task(Pythagorean_triple)
 asm_task(Palindrome_string)
+#asm_task(maximum_subarray_summ)
+asm_task(Parentheses_balance_check)

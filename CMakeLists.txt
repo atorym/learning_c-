@@ -18,9 +18,11 @@ function(target_pch name)
     "<range/v3/all.hpp>"
     "<fmt/printf.h>"
     "<fmt/format.h>"
+    "<fmt/ranges.h>"
     )
 endfunction()
 
+add_subdirectory(service_shared)
 add_subdirectory(autotask)
 add_subdirectory(sandbox)
 add_subdirectory(sort_sandbox)

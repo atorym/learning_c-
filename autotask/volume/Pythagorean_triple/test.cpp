@@ -7,8 +7,6 @@
 
 #include <charconv>
 
-#include <service/helper.hpp>
-
 #include <Pythagorean_triple/solution.hpp>
 
 
@@ -99,7 +97,7 @@ TEST(autotask, pythagorean_triple) {
           });
         }),
         expect)) {
-      ASSERT_THAT(line_expect, UnorderedElementsAreArray(line_answ | ranges::to<std::vector<rng_under_t>>));
+      ASSERT_THAT(line_expect, UnorderedElementsAreArray(line_answ | ranges::to<std::vector<rng_under_t>>)) << "Actual string:\n" << answ_str;
     }
   }
 }

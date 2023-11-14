@@ -5,8 +5,6 @@
 #include <gmock/gmock-matchers.h>
 //#include <gmock/gmock-more-matchers.h>
 
-#include <service/helper.hpp>
-
 #include <Palindrome_string/solution.hpp>
 
 

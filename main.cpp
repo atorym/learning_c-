@@ -13,6 +13,19 @@
 #include <string>
 
 
+std::size_t read_clamp(std::size_t floor = 1, std::size_t top = 100) {
+  std::size_t out;
+  while (true) {
+    std::cin >> out;
+    if (out == std::clamp(out, floor, top)) {
+      break;
+    }
+    std::cout << "Your input isn't correct, repeat\n: ";
+  }
+  return out;
+}
+
+
 int main() {
   //создаем структуру с оценкой и именем студента
   struct Student {
@@ -20,20 +33,12 @@ int main() {
     std::size_t grade;
   };
   std::cout << "How many students do you have? (1-100)\n: ";
-  std::size_t amount_of_students;
-  //проверка на идиота
-  while (true){
-  std::cin >> amount_of_students;
-  if (amount_of_students<101 && amount_of_students>0){
-    break ;
-  }
-  std::cout << "Your input isn't correct, repeat\n: ";
-  }
+  const std::size_t amount_of_students = read_clamp();
   //создаем массив структур (vector не работает)
   //  std::vector<Student> student;
   Student* student = new Student[amount_of_students];
   //заменить 32767 на что то типа std::cin.end (оператор конца стэка std::sin), да и getline не рабоатет
-  //  std::cin.ignore(32767, '\n');
+
   for (std::size_t i = 0; i < amount_of_students; ++i) {
     std::cout << "Pls enter name of your " << i + 1 << " student\n:";
     //getline - не рабоает
@@ -41,17 +46,11 @@ int main() {
     std::cin >> student[i].name;
     std::cout << "Pls enter grade of your " << i + 1 << " student\n:";
     //ввод с проверкой на идиота
-    while (true){
-      std::cin >> student[i].grade;
-      if (student[i].grade<101 && student[i].grade>0){
-        break ;
-      }
-      std::cout << "Your input isn't correct, repeat\n: ";
-    }
+    student[i].grade = read_clamp();
   }
   //сортируем массив
   for (std::size_t i = 0; i < amount_of_students - 1; ++i) {
-    for (int j = 0; j < amount_of_students - 1; ++j) {
+    for (std::size_t j = i; j < amount_of_students - 1; ++j) {
       if (student[j].grade < student[j + 1].grade)
         std::swap(student[j], student[j + 1]);
     }
@@ -63,7 +62,6 @@ int main() {
   }
 
   delete[] student;
-  student = nullptr;
 
   return EXIT_SUCCESS;
 }

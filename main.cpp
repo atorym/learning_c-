@@ -10,20 +10,20 @@
 #include <vector>
 
 
-void print_c_stile_string(char[], auto, auto);
+void print_c_stile_string(const char[], auto, auto);
 
 
 int main() {
-  char c_stile_string[] = "Hello world!";
-  auto begin{std::begin(c_stile_string)};
-  auto end{std::end(c_stile_string)};
+  constexpr char c_stile_string[] = "Hello world!";
+  const auto begin{std::begin(c_stile_string)};
+  const auto end{std::end(c_stile_string)};
   print_c_stile_string(c_stile_string, begin, end);
 
   return EXIT_SUCCESS;
 }
 
 
-void print_c_stile_string(char c_stile_string[], auto begin, auto end) {
+void print_c_stile_string(const char c_stile_string[], auto begin, auto end) {
   for (auto i{begin}; i != end; ++i) {
     std::cout << *i;
   }

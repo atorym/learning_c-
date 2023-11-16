@@ -31,42 +31,39 @@ enum Suit : std::size_t {
 
 struct card {
   card_spec::Card_value value;
-  card_spec::Suit       suit;
+  card_spec::Suit suit;
 };
 }// namespace card_spec
 namespace constants {
-constexpr size_t clubs_begin    = 0;
-constexpr size_t clubs_end      = 12;
+constexpr size_t clubs_begin = 0;
+constexpr size_t clubs_end = 12;
 constexpr size_t diamonds_begin = 13;
-constexpr size_t diamonds_end   = 25;
-constexpr size_t hearts_begin   = 26;
-constexpr size_t hearts_end     = 38;
-constexpr size_t spades_begin   = 39;
-constexpr size_t spades_end     = 51;
-constexpr size_t deck_size      = 53;
+constexpr size_t diamonds_end = 25;
+constexpr size_t hearts_begin = 26;
+constexpr size_t hearts_end = 38;
+constexpr size_t spades_begin = 39;
+constexpr size_t spades_end = 51;
+constexpr size_t deck_size = 53;
 }// namespace constants
 
 
-void        fill_deck(std::array<card_spec::card, constants::deck_size>&, size_t, size_t, card_spec::Suit);
-void        print_card(card_spec::card const&);
-void        print_deck(const std::array<card_spec::card, constants::deck_size>&);
-void        swap_card(card_spec::card&, card_spec::card&);
-void        shuffle_deck(const std::array<card_spec::card, constants::deck_size>&);
+void fill_deck(std::array<card_spec::card, constants::deck_size>&, size_t, size_t, card_spec::Suit);
+void print_card(card_spec::card const&);
+void print_deck(const std::array<card_spec::card, constants::deck_size>&);
+void swap_card(card_spec::card&, card_spec::card&);
+void shuffle_deck(std::array<card_spec::card, constants::deck_size>&);
 std::size_t get_card_value(card_spec::card const&);
 
 int main() {
-  //инициализируем Вихрь Мерсенна случайным стартовым числом
-  std::random_device rd;
-  std::mt19937       mersene(rd());
   //создаем массив-карточную колоду
   std::array<card_spec::card, constants::deck_size> deck;
   //делим колоду на 4 части, каждой из которых присваиваем свою масть, после чего инициализируем колоду картами
-  fill_deck(deck, constants::clubs_begin, constants::clubs_end,card_spec::clubs);
-  fill_deck(deck,constants::diamonds_begin,constants::diamonds_end,card_spec::diamonds);
-  fill_deck(deck,constants::hearts_begin,constants::hearts_end,card_spec::hearts);
-  fill_deck(deck,constants::spades_begin,constants::spades_end,card_spec::spades);
+  fill_deck(deck, constants::clubs_begin, constants::clubs_end, card_spec::clubs);
+  fill_deck(deck, constants::diamonds_begin, constants::diamonds_end, card_spec::diamonds);
+  fill_deck(deck, constants::hearts_begin, constants::hearts_end, card_spec::hearts);
+  fill_deck(deck, constants::spades_begin, constants::spades_end, card_spec::spades);
 
-
+  shuffle_deck(deck);
   std::cout << '\n';
   print_deck(deck);
 
@@ -76,7 +73,7 @@ int main() {
 
 void fill_deck(std::array<card_spec::card, constants::deck_size>& deck, size_t begin, size_t end, card_spec::Suit suit_type) {
   for (std::size_t i = begin, j = 0; i < end + 1; ++i, ++j) {
-    deck[i].suit  = suit_type;
+    deck[i].suit = suit_type;
     deck[i].value = static_cast<card_spec::Card_value>(j);
   }
 }
@@ -150,6 +147,15 @@ void print_deck(const std::array<card_spec::card, 53>& deck) {
 void swap_card(card_spec::card& lhs, card_spec::card& rhs) {
   std::swap(lhs.suit, rhs.suit);
   std::swap(lhs.value, rhs.value);
+}
+
+void shuffle_deck(std::array<card_spec::card, constants::deck_size>& deck) {
+  std::random_device rd;
+  std::mt19937 mersene(rd());
+  std::uniform_int_distribution<> dist(0, 52);
+    for (std::size_t i = 0; i <= deck.size(); ++i) {
+      swap_card(deck[i], deck[dist(mersene)]);
+    }
 }
 
 std::size_t get_card_value(card_spec::card const& card) {

@@ -54,4 +54,4 @@ function(asm_task name)
 endfunction()
 
 
-#asm_task()
+asm_task(palindromic_substrings)

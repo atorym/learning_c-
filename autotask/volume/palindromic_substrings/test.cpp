@@ -20,6 +20,9 @@ using namespace palindromic_substrings;
 TEST(autotask, palindromic_substrings) {
   EXPECT_EQ(palindromic_count("abc"), 3);
   EXPECT_EQ(palindromic_count("aaa"), 6);
+  EXPECT_EQ(palindromic_count("aaaa"), 10);
+  EXPECT_EQ(palindromic_count("a"), 1);
+  EXPECT_EQ(palindromic_count(""), 0);
 }
 
 

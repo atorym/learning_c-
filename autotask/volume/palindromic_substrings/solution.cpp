@@ -8,4 +8,4 @@ std::size_t palindromic_count(std::string_view in) {
 }
 
 
-} // namespace at::palindromic_substrings
+}// namespace at::palindromic_substrings

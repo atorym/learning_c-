@@ -11,7 +11,7 @@
 namespace at::is_palindrome {
 
 
-<#initializer#>
+bool is_palindrome_func(std::string_view in);
 
 
 } // namespace at::is_palindrome

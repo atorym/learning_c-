@@ -18,8 +18,14 @@ using namespace is_palindrome;
 
 
 TEST(autotask, is_palindrome) {
-  EXPECT_EQ(<#initializer #>, <#initializer #>);
-  EXPECT_THAT(<#initializer #>, ElementsAre(<#initializer #>));
+  EXPECT_FALSE(is_palindrome_func("abc"));
+  EXPECT_TRUE(is_palindrome_func("aaa"));
+  EXPECT_TRUE(is_palindrome_func("aaaa"));
+  EXPECT_TRUE(is_palindrome_func("a"));
+  EXPECT_TRUE(is_palindrome_func("madam"));
+  EXPECT_FALSE(is_palindrome_func("hello"));
+  EXPECT_TRUE(is_palindrome_func("radar"));
+  EXPECT_TRUE(is_palindrome_func(""));
 }
 
 

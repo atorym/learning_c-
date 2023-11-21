@@ -55,3 +55,4 @@ endfunction()
 
 
 asm_task(palindromic_substrings)
+asm_task(is_palindrome)

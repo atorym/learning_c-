@@ -1,5 +1,6 @@
-#include <algorithm>
 #include <is_palindrome/solution.hpp>
+
+#include <algorithm>
 #include <string>
 #include <vector>
 
@@ -8,22 +9,27 @@ namespace at::is_palindrome {
 
 
 bool is_palindrome_func(std::string_view in) {
-
-
-  //обработка исключений
-  if (in.size() == 1 || in.size() == 0) {
-    return true;
-  }
-
-  std::string inverted_array_copy;
-  std::copy(in.crbegin(), in.crend(), std::back_inserter(inverted_array_copy));
-
-  for (std::size_t i = 0; i <= in.size(); ++i) {
-    if (in[i] != inverted_array_copy[i]) {
+  auto it_forward = in.cbegin();
+  auto it_backward = in.crbegin();
+  while (it_forward != in.cend()) {
+    if (*it_forward != *it_backward) {
       return false;
     }
+    ++it_forward;
+    ++it_backward;
   }
   return true;
+
+  //  if (in.empty()) {
+  //    return true;
+  //  }
+  //
+  //  for (std::size_t i_f = 0; i_f < in.size() / 2; ++i_f) {
+  //    if (in[i_f] != in[in.size() - 1 - i_f]) {
+  //      return false;
+  //    }
+  //  }
+  //  return true;
 }
 
 

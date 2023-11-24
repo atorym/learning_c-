@@ -9,14 +9,11 @@ namespace at::is_palindrome {
 
 
 bool is_palindrome_func(std::string_view in) {
-  auto it_forward = in.cbegin();
-  auto it_backward = in.crbegin();
-  while (it_forward != in.cend()) {
-    if (*it_forward != *it_backward) {
+  for(auto it = in.cbegin(); it != in.cend(); ++it) {
+    auto const it_b = in.crbegin() + (it - in.cbegin());
+    if(*it != *it_b) {
       return false;
     }
-    ++it_forward;
-    ++it_backward;
   }
   return true;
 

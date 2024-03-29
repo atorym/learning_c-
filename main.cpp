@@ -14,11 +14,11 @@ int getValue()
 int main()
 {
  int a{};                            //нет
- constexpr int b{};                  //нет
+ constexpr int b{};                  //да
  static int c{};                     //да
  static constexpr int d{};           //да
- const int e{};                      //нет
- const int f{ getValue() };          //нет
+ const int e{};                      //да
+ const int f{ getValue() };          //да
  static const int g{};               //да
  static const int h{ getValue() };   //да
 
@@ -168,44 +168,37 @@ int main() {
   //заводим рандомный генератор от времени
   srand(time(nullptr));
   //генерируем рандомное число в диапазоне
-  std::size_t random_number = minimum_random_value + rand() % (maximum_random_value - minimum_random_value);
+  std::size_t const random_number = minimum_random_value + rand() % (maximum_random_value - minimum_random_value);
 
 
   //заполнение массива чисел
   std::vector<std::size_t> numbers;
+  numbers.resize(count_of_values);
   numbers.push_back(start_value);
 
-  for (int i = 1; i < count_of_values; ++i) {
-
+  for (std::size_t i = 1; i < count_of_values; ++i) {
     numbers.push_back(numbers[i - 1] + 1);
   }
   //заполнение массива домноженых квадратных чисел
   std::vector<std::size_t> sqrt_numbers;
-  for (int i = 0; i < count_of_values; ++i) {
+  sqrt_numbers.resize(count_of_values);
+  for (std::size_t i = 0; i < count_of_values; ++i) {
     sqrt_numbers.push_back(numbers[i] * numbers[i] * random_number);
   }
 
-
   std::cout << "I just genereted " << count_of_values
             << " square numbers. Do you know what each number is after multiplying it by " << random_number << "?\n";
-  std::size_t i = 0;
-  std::size_t counter = count_of_values;
 
-  auto min_element(std::min_element(sqrt_numbers.begin(), sqrt_numbers.end(),
-    [](std::size_t lhs, std::size_t rhs) {
-      return lhs < rhs;
-    }));
-  std::size_t distance{static_cast<std::size_t>(std::abs(5 - 3))};
+  auto const min_element = std::min_element(sqrt_numbers.cbegin(), sqrt_numbers.cend());
+  std::size_t const distance = std::abs(5 - 3);
 
   //основной loop
   while (true) {
     std::size_t user_value;
     std::cin >> user_value;
 
-    auto found(std::find(sqrt_numbers.begin(), sqrt_numbers.end(), user_value));
-
     //case true
-    if (found != sqrt_numbers.end()) {
+    if (auto const found = std::find(sqrt_numbers.cbegin(), sqrt_numbers.cend(), user_value); found != sqrt_numbers.cend()) {
       sqrt_numbers.erase(found);
       std::cout << "Great! You've got one! " << sqrt_numbers.size() << " numbers left.\n";
       if (sqrt_numbers.empty()) {

@@ -22,12 +22,13 @@
 #include <cstdint>
 #include <cstdlib>
 #include <string>
+#include <iostream>
 
 
 //задание 1
 std::size_t sum_to(const std::size_t n) {
   std::size_t summ = 0;
-  for (std::size_t i = 1; i != n + 1; ++i) {
+  for (std::size_t i = 1; i <= n; ++i) {
     summ += i;
   }
   return summ;
@@ -41,7 +42,6 @@ struct animal {
 };
 
 void print_animal_name(animal& bober) {
-  std::cout << bober.name;
 }
 
 //задание 3
@@ -69,7 +69,7 @@ std::size_t get_index_of_largest_value(std::size_t* array, std::size_t size) {
 }
 
 //задание 5
-std::size_t& get_element(std::size_t* array, std::size_t index) {
+std::size_t const& get_element(std::size_t* array, std::size_t index) {
   return array[index];
 }
 

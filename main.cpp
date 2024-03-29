@@ -13,40 +13,40 @@ c) Измените функцию distanceTo() из метода класса �
 объекта класса Point в качестве параметров. Переименуйте эту функцию на distanceFrom().
 */
 
-#include <iostream>
 #include <cmath>
+#include <iostream>
 
 
 class Point {
-private:
-  double m_a{0.0};
-  double m_b{0.0};
-
 public:
-  Point()= default;
+  Point() = default;
+
   Point(double a, double b)
       : m_a{a}
-      , m_b{b}
-  {
+      , m_b{b} {
   }
 
-  void print(){
+  void print() {
     std::cout << "Point(" << m_a << ", " << m_b << ")\n";
   }
 
   friend double distanceFrom(Point, Point);
+
+private:
+  double m_a = 0;
+  double m_b = 0;
 };
 
 
-double distanceFrom(Point first, Point second){
-  return sqrt((first.m_a- second.m_a) * (first.m_a - second.m_a) + (first.m_b - second.m_b)*(first.m_b - second.m_b));
+double distanceFrom(Point first, Point second) {
+  return std::sqrt((first.m_a - second.m_a) * (first.m_a - second.m_a) + (first.m_b - second.m_b) * (first.m_b - second.m_b));
 }
 
 
 int main() {
 
   Point first;
-  Point second(2.0, 5.0);
+  Point second {2.0, 5.0};
   first.print();
   second.print();
   std::cout << "Distance between two points: " << distanceFrom(first, second) << '\n';

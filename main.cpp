@@ -36,14 +36,22 @@ e) Теперь нам нужно вывести информацию про н�
     Jack is the orc that has 90 health points.
       */
 #include <array>
+#include <cassert>
 #include <cstdint>
 #include <iostream>
+#include <random>
 #include <string>
 
 
-  class Monster {
+std::minstd_rand0 rand0 = [] {
+  std::random_device rd;
+  return std::minstd_rand0{rd()};
+}();
+
+
+class Monster {
 public:
-  enum class MonsterType {
+  enum class MonsterType : std::uint8_t {
     Dragon = 0,
     Goblin,
     Ogre,
@@ -52,24 +60,19 @@ public:
     Troll,
     Vampire,
     Zombie,
-    MAX_MONSTER_TYPES = 8
+    MAX_MONSTER_TYPES
   };
-
-private:
-  MonsterType m_race = MonsterType::MAX_MONSTER_TYPES;
-  std::string m_name = "Default";
-  std::size_t m_health = 0;
 
 public:
   Monster() = default;
 
-  Monster(MonsterType race, std::string name, std::size_t health)
-      : m_race{race}
-      , m_name{name}
-      , m_health{health} {
+  Monster(MonsterType race, std::string_view name, std::size_t health)
+      : race_{race}
+      , name_{name}
+      , health_{health} {
   }
 
-  static std::string getTypeString(MonsterType type) {
+  static std::string_view getTypeString(MonsterType type) {
     switch (type) {
       case MonsterType::Dragon:
         return "Dragon";
@@ -88,53 +91,52 @@ public:
       case MonsterType::Zombie:
         return "Zombie";
       default:
+        assert(false);
         return "ERROR";
     }
   }
 
+
   void print() {
-    std::cout << m_name << " is the " << getTypeString(m_race) << " that has " << m_health << " health points.\n";
+    std::cout << name_ << " is the " << getTypeString(race_) << " that has " << health_ << " health points.\n";
   }
 
-  friend class MonsterGenerator;
+private:
+  std::string name_ = "Default";
+  std::size_t health_ = 0;
+  MonsterType race_ = MonsterType::MAX_MONSTER_TYPES;
 };
 
 
 class MonsterGenerator {
 private:
   //Массив имен
-  constexpr static std::array<std::string, 6> name_array{
+  constexpr static std::array<std::string_view, 6> name_array{
     "George",
     "Maxim",
     "Dimanius",
     "Danila",
     "Sergey",
-    "Akakiy"};
+    "Akakiy",
+  };
 
   //генератор рандомных чисел в заданом диапазоне
   static std::size_t getRandomNumber(int min, int max) {
-    static const double fraction = 1.0 / (static_cast<double>(RAND_MAX) + 1.0);
-    // используем static, так как это значение нужно вычислить единожды
-    // Равномерно распределяем вычисление значения из нашего диапазона
-    return static_cast<int>(rand() * fraction * (max - min + 1) + min);
+    return std::uniform_int_distribution{min, max}(rand0);
   }
 
 public:
   static Monster generateMonster() {
-    Monster a;
-    a.m_race = static_cast<Monster::MonsterType>(getRandomNumber(0, static_cast<std::size_t>(Monster::MonsterType::MAX_MONSTER_TYPES) - 1));
-    a.m_name = name_array[getRandomNumber(0, 5)];
-    a.m_health = getRandomNumber(1, 100);
-    return a;
+    return {
+      static_cast<Monster::MonsterType>(getRandomNumber(0, static_cast<int>(Monster::MonsterType::MAX_MONSTER_TYPES) - 1)),
+      name_array[getRandomNumber(0, name_array.size() - 1)],
+      getRandomNumber(1, 100),
+    };
   }
 };
 
 
 int main() {
-
-  srand(static_cast<unsigned int>(time(0)));
-  // используем системные часы в качестве стартового значения
-
   Monster m = MonsterGenerator::generateMonster();
   m.print();
 

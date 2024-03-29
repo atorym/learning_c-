@@ -14,13 +14,12 @@
 #include <vector>
 
 //a)
-const double& max(const double&, const double&);
+double max(double, double);
 //b)
 void swap(int&, int&);
 //c)
 
-std::size_t return_value = 0;
-std::size_t get_largest_element(const std::vector<std::size_t>& array, size_t& size, std::size_t& return_value);
+std::size_t& get_largest_element(std::size_t* array, std::size_t size);
 
 
 int main() {
@@ -34,8 +33,8 @@ int main() {
 a)--------------------------------------------------------------------------------
  int& doSomething()
  {
- int array[] = { 1, 3, 5, 7, 9 };
- return array[2];
+   int array[] = { 1, 3, 5, 7, 9 };
+   return array[2];
  }
 ----------------------------------------------------------------------------------
 После завершения функции массив и его значения удаляются. А тип возвращаемого значения int&.
@@ -44,19 +43,19 @@ a)------------------------------------------------------------------------------
 b)--------------------------------------------------------------------------------
  int sumTo(int value)
  {
- return value + sumTo(value - 1);
+  return value + sumTo(value - 1);
  }
 ----------------------------------------------------------------------------------
 Бесконечная рекурсия, нет выхода.
 c)--------------------------------------------------------------------------------
  float divide(float a, float b)
  {
- return a / b;
+   return a / b;
  }
 
  double divide(float a, float b)
  {
- return a / b;
+  return a / b;
  }
 ----------------------------------------------------------------------------------
 Неправильное использование перегрузки функции. При использовании данного приема
@@ -66,12 +65,12 @@ d)------------------------------------------------------------------------------
 
  int main()
  {
- int array[1000000000];
+   int array[1000000000];
 
- for (const auto &x: array)
- std::cout << x << ' ';
+   for (const auto &x: array)
+   std::cout << x << ' ';
 
- return 0;
+   return 0;
  }
 ----------------------------------------------------------------------------------
 В массиве слишком много членов. Seg fault.
